@@ -267,8 +267,6 @@ onMounted(async () => {
 @media(min-width:960px){
   #map {
     min-width: 450px;
-    width:80%;
-    height: 85%;
     border: 1px solid #000;
     border-radius: 15px;
     position: absolute;
@@ -280,6 +278,7 @@ onMounted(async () => {
 
 @media(min-width:1280px){
   #map{
+    width: 85%;
     height: 75%;
     position: absolute;
     top: 50%;

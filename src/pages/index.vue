@@ -1,6 +1,6 @@
 <template>
-  <v-row style="height: 94vh;">
-    <v-col v-if="!mobile" cols="12" lg="8" class="sm_map map_col order-2 order-lg-1">
+<v-row style="height: 94vh;">
+    <v-col v-if="!mobile" cols="12" md="7" lg="8" class="map_col order-2 order-lg-1  order-md-1">
       <Leaflet-map  
       :searchQuery="searchQuery"
       :selectedCity="selectedCity"
@@ -9,7 +9,7 @@
       id="map"
       />
     </v-col >
-    <v-col v-if="!mobile" cols="12" lg="4" class="map_col order-1 order-lg-2">
+    <v-col v-if="!mobile" cols="12" md="5" lg="4" class="map_col order-1 order-lg-2  order-md-2">
       <v-card  class="find-resource" elevation="0">
           <v-toolbar color="secondary" prominent class=" bb-1 d-none d-md-inline-block">
               <v-toolbar-title>
@@ -32,8 +32,8 @@
                 >
               清空條件
               </v-btn>
-              <v-btn icon="mdi-delete" class="d-md-none" variant="text" color="black" @click="clear()"></v-btn>
-              <v-btn icon="mdi-filter" class="d-md-none" variant="text" color="black" @click="toggleFilterPanel"></v-btn>  
+              <!-- <v-btn icon="mdi-delete" class="d-md-none" variant="text" color="black" @click="clear()"></v-btn>
+              <v-btn icon="mdi-filter" class="d-md-none" variant="text" color="black" @click="toggleFilterPanel"></v-btn>   -->
             </div>
               <Search
               class="my-5"
@@ -47,9 +47,9 @@
               <v-select  
               v-model="selectedCity"
               :items="cities"
-              min-width="215px"
+              min-width="145px"
               label="縣市"
-              class="me-4 d-none d-md-inline-block"
+              class="me-3 d-none d-sm-inline-block"
               style="width: 48%;"
               density="comfortable"
               variant="outlined"
@@ -59,9 +59,9 @@
               <v-select  
               v-model="selectedArea"
               :items="areas"
-              min-width="215px"
+              min-width="145px"
               label="鄉鎮市區"
-              class="d-none d-md-inline-block"
+              class="d-none d-sm-inline-block"
               style="width: 48%;"
               density="comfortable"
               variant="outlined"
@@ -110,12 +110,39 @@
             id="search-xs"
             class="ms-2"
             dense
+            width="95%"
           />
           </v-col>
           <v-col cols="1" class="text-center">
+            <v-btn
+                id="clear"
+                type="submit"
+                variant="plain"
+                class="rounded-md bb-1 mt-2 bg-grey-lighten-4 d-none d-md-block"
+                density="comfortable"
+                :ripple="false"
+                height="40"
+                width="60"
+                @click="clear()"
+                >
+              清空條件
+            </v-btn>
             <v-btn icon="mdi-delete" class="d-md-none" variant="text" density="comfortable" color="black" @click="clear()"></v-btn>
           </v-col>
           <v-col cols="1" class="text-center">
+            <v-btn
+                id="clear"
+                type="submit"
+                variant="plain"
+                class="rounded-md bb-1 mt-2 bg-grey-lighten-4 d-none d-md-block"
+                density="comfortable"
+                :ripple="false"
+                height="40"
+                width="60"
+                @click="toggleFilterPanel"
+                >
+              篩選
+            </v-btn>
             <v-btn icon="mdi-filter" class="d-md-none" variant="text" density="comfortable" color="black" @click="toggleFilterPanel"></v-btn>  
           </v-col>
         </v-row>
@@ -167,7 +194,7 @@ import axios from 'axios';
 import { definePage } from 'vue-router/auto'
 import LeafletMap from '@/components/leafletMap.vue';
 import { useDisplay } from 'vuetify'
-const { mobile } = useDisplay()
+const { mobile , md} = useDisplay()
 definePage({
 meta: {
   title: 'KeeperS | 資源查詢'
@@ -197,6 +224,8 @@ const selectedCity = ref(null);
 const selectedArea = ref(null);
 // 設定需要的縣市
 const requiredCities = ['台北市', '新北市'];
+
+
 // 加載 JSON 資料
 const loadData = async () => {
 try {
@@ -279,13 +308,32 @@ const toggleFilterPanel = () => {
 .find-resource{
   background-color: transparent;
   height: 80%;
-  min-width: 450px;
+  max-width: 450px;
   width: 80%;
   position: absolute;
   overflow-y: auto;
   /* top: 40%;
   left: 50%;
   transform: translate(-50%,-40%); */
+}
+@media (max-width: 599px) {
+  #search-xs {
+    width: 95%;
+  }
+
+  #map-xs {
+    height: calc(100vh - 100px); /* 減去 app-bar 的高度 */
+  }
+}
+
+
+@media(min-width:960px){
+  .find-resource{
+    overflow-y: auto;
+    border:1px solid black;
+  }
+  
+  
 }
 @media(min-width:1280px){
   .map_col{
@@ -297,39 +345,15 @@ const toggleFilterPanel = () => {
     height: 75%;
     top: 50%;
     left: 42%;
-    transform: translate(-50%,-50%);
+    transform: translate(-45%,-50%);
   }
 }
-@media(min-width:960px){
-  .find-resource{
-    overflow-y: auto;
-    border:1px solid black;
-  }
-  
-}
+
 
 .bb-1{
   border-bottom: 1px solid #7a7a7a;
 }
 
-/* #search{
-  width: 70%;
-  position: absolute;
-  top: 0%;
-  left: 5%;
-}
-#filter{
-  position: absolute;
-  top: 20%;
-  left: 5%;
-} */
-@media (max-width: 599px) {
-  #search-xs {
-    width: 95%;
-  }
 
-  #map-xs {
-    height: calc(100vh - 100px); /* 減去 app-bar 的高度 */
-  }
-}
+
 </style>

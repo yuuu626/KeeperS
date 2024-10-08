@@ -1,20 +1,5 @@
 <template>
-    <!-- <v-responsive max-width="450px" class="my-5">
-        <v-text-field
-        v-model="internalValue"
-            variant="outlined"
-            label="搜尋"
-            prepend-inner-icon="mdi-magnify"
-            hide-details
-            single-line
-            density="comfortable"
-            clearable
-            @input="updateValue"
-            @keydown.enter="$emit('search')"
-        >
-        </v-text-field>
-    </v-responsive> -->
-    <v-responsive max-width="450px">
+    <v-responsive max-width="1000px">
         <v-text-field
             v-model="internalValue"
             variant="outlined"
