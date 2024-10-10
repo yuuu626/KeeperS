@@ -5,7 +5,6 @@
         variant="outlined"
         hide-details
         single-line
-        density="comfortable"
         clearable
         dense
         v-bind="$attrs"

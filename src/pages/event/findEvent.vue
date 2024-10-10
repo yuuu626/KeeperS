@@ -3,8 +3,7 @@
             <v-btn
                 v-if="user.isLogin"
                 @click="openDialog(null)"
-                class="bg-third b-1 btn-container p-0"
-                
+                class="bg-third b-1 p-0"
                 variant="text"
                 id="create"
                 >
@@ -39,36 +38,38 @@
                                     </v-row>
                                     <v-row>
                                         <!-- 活動名稱 -->
-                                        <v-col cols="12" md="3" class="my-auto text-center">
+                                        <v-col cols="4"class="my-auto text-center">
                                         <label class="form-label">活動名稱：</label>
                                         </v-col>
-                                        <v-col cols="12" md="9">
+                                        <v-col cols="8" >
                                             <inputText  
                                             v-model="title.value.value"
                                             :error-messages="title.errorMessage.value"
+                                            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                                             />
                                         </v-col>
                                         <!-- 活動地點 -->
-                                        <v-col cols="12" md="3" class="my-auto text-center">
+                                        <v-col cols="4"class="my-auto text-center">
                                             <label class="form-label">活動地點：</label>
                                         </v-col>
-                                        <v-col cols="12" md="9">
+                                        <v-col cols="8">
                                             <inputText 
                                             v-model=" address.value.value"
                                             :error-messages=" address.errorMessage.value"
+                                            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                                             ></inputText>
                                         </v-col>
                                         <!-- 活動類別 -->
-                                        <v-col cols="12" md="3" class="my-auto text-center">
+                                        <v-col cols="4"class="my-auto text-center">
                                             <label class="form-label">活動類別：</label>
                                         </v-col>
-                                        <v-col cols="12" md="9">
+                                        <v-col cols="8">
                                           <v-select
                                                 v-model="category.value.value"
                                                 :error-messages="category.errorMessage.value"
                                                 label="選擇" 
                                                 variant="outlined" 
-                                                density="comfortable" 
+                                                :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                                                 dense
                                                 :items="chips"
                                                 hide-details
@@ -77,40 +78,44 @@
                                           </v-select>
                                         </v-col>
                                         <!-- 活動時間 -->
-                                        <v-col cols="12" md="3" class="my-auto text-center px-0">
+                                        <v-col cols="4" class="my-auto text-center px-0">
                                             <label class="form-label">活動時間：</label>
                                         </v-col>
-                                        <v-col cols="12" md="9">
+                                        <v-col cols="8" >
                                             <inputText
                                             v-model="date.value.value"
                                             :error-messages="date.errorMessage.value"
+                                            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                                             />
                                         </v-col>
                                         
 
                                         <!-- 主辦單位 -->
-                                        <v-col cols="12" md="3" class="my-auto text-center">
+                                        <v-col cols="4" class="my-auto text-center">
                                             <label class="form-label">主辦單位：</label>
                                         </v-col>
-                                        <v-col cols="12" md="9">
+                                        <v-col cols="8">
                                             <inputText
                                             v-model="organizer.value.value"
                                             :error-messages="organizer.errorMessage.value"
+                                            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                                             />
                                         </v-col>
 
                                         <!-- 活動介紹 -->
-                                        <v-col cols="12" md="3" class="text-center">
+                                        <v-col cols="4" class="text-center">
                                         <label class="form-label">活動介紹：</label>
                                         </v-col>
-                                        <v-col cols="12" md="9">
+                                        <v-col cols="8" >
                                             <v-textarea
+                                                auto-grow
                                                 label="輸入文字"
                                                 variant="outlined" 
                                                 clearable
                                                 hide-details
                                                 v-model="description.value.value"
                                                 :error-messages="description.errorMessage.value"
+                                                :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                                             ></v-textarea>
                                         </v-col>
                                     </v-row>
@@ -189,13 +194,14 @@
                     </v-sheet>
                   </v-responsive>
                   <div class="mx-auto" style="width:100%;">
-                  <v-row class="my-3 d-flex w-lg-75 w-md-100 mx-auto" >
-                    <v-col cols="12" sm="4" md="3" v-for="event in filteredEvents" :key="event._id" class="mx-0">
+                  <!-- <v-row class="my-3 d-flex w-lg-75 w-md-100 mx-auto px-sm-5" > -->
+                  <v-row class="my-3 d-flex " >
+                    <v-col cols="12" sm="6" md="4" lg="3" v-for="event in filteredEvents" :key="event._id" class="mx-0">
                       <router-link :to="'/event/'+ event._id" style="text-decoration: none">
                         <v-card  variant="flat" color="third" class="b-1 card-size">
                             <v-card-item class="p-5 text-left">
-                                <div  class="d-flex justify-content-center b-1 mt-2 mb-2  bg-white">
-                                    <v-img :src="event.image" rounded containr></v-img>
+                                <div  class="d-flex justify-content-center b-1 mt-2 mb-2 bg-white img-container">
+                                    <v-img :src="event.image" contain></v-img>
                                 </div>
                                 <v-card-title class="font-weight-black " style="font-size: 1.1rem;width: 215px;word-wrap: break-word;">{{ event.title }}
                                 </v-card-title>
@@ -299,7 +305,11 @@ const closeDialog = () => {
   fileAgent.value.deleteFileRecord() 
 }
 
-
+watch(() => {
+  if(!dialog){
+  resetForm()
+}
+});
 const schema = yup.object({
   title: yup
     .string()
@@ -477,50 +487,89 @@ loadEvents();
   border: 1px solid #7a7a7a;
 }
 #create{
-    position: fixed;
-    right: 8%;
-    bottom: 4%;
-    border-radius: 50%;
-}
-
-.btn-container{
+  position: fixed;
+  right: 8%;
+  bottom: 4%;
+  border-radius: 50%;
   width: 65px;
   height: 65px;
+  z-index: 15;
+}
+
+.img-container{
+  width: 100%;
+  max-height: 250px;
 }
 
 .card-size{
-  /* width:295px; */
-  width: 100%;
-  height:390px;
-
-  
+  max-width: 290px;
+  margin: auto;
+  width: 70%;
+  height:100%;
 }
-@media (min-width: 500px) {
-  .btn-container{
+.form-label{
+    font-size: 18px;
+    font-weight: bold;
+}
+@media (min-width: 600px) {
+  .v-row{
+    padding: 0px 8% 0px 8%;
+  }
+  .form-label{
+    font-size: 20px;
+    font-weight: bold;
+}
+  #create{
     z-index: 5;
     width: 60px;
     height: 60px;
     
   }
+  .img-container{
+    width: 100%;
+    max-height: 260px;
+    min-height: 250px;
+  }
   .card-size{
     margin: auto;
     width:100%;
-    height:420px;
-    
-    div{
-      max-width: 330px;
-      max-height: 280px;
-    }
+    max-width: 350px;
+    height:380px;
+  }
+  .form-label{
+    font-size: 20px;
+    font-weight: bold;
+}
+}
+
+@media (min-width: 600px) and (max-width: 750px) {
+  .v-row{
+    padding: 0px 5% 0px 5%;
+  }
+}
+@media (min-width: 1280px) {
+  .v-row{
+    padding: 0px 14% 0px 13%;
+  }
+}
+@media (min-width: 1280px) and (max-width: 1500px) {
+  .card-size{
+    margin: auto;
+    width:100%;
+    max-width: 350px;
+    height:330px;
+  }
+  .img-container{
+    width: 100%;
+    min-height: 190px;
+    max-height: 190px;
   }
 }
 
 .v-overlay__content{
     background-color: #fff;
 }
-.form-label{
-    font-size: 20px;
-    font-weight: bold;
-}
+
 ::v-deep .v-input__prepend{
     margin-right: 5px;
 }

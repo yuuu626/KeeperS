@@ -80,7 +80,6 @@
                   v-for="(category, index) in categories"
                   :key="index"
                   v-model="selectedcategories"
-                  @click="handlePanelClick(category, index)"
                   >
                   <v-expansion-panel-title>{{ category.name }}</v-expansion-panel-title>
                   <v-expansion-panel-text>
@@ -160,7 +159,6 @@
           v-for="(category, index) in categories"
           :key="index"
           v-model="selectedcategories"
-          @click="handlePanelClick(category, index)"
         >
           <v-expansion-panel-title>{{ category.name }}</v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -189,20 +187,17 @@
   </v-row>
 </template>
 <script setup>
-import { ref, watch, onMounted, defineEmits } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import axios from 'axios';
 import { definePage } from 'vue-router/auto'
 import LeafletMap from '@/components/leafletMap.vue';
 import { useDisplay } from 'vuetify'
-const { mobile , md} = useDisplay()
+const { mobile } = useDisplay()
 definePage({
 meta: {
   title: 'KeeperS | 資源查詢'
 }
 })
-
-const emit = defineEmits();
-
 
 const categories = ref([
 { name: '服務對象', subcategories: ['長期照顧','身心障礙','婦女','兒童及少年','心理衛生','社會救助','綜合','其他'] },
@@ -273,13 +268,6 @@ loadData();
 
 
 const searchQuery = ref('');
-const handlePanelClick = (category, index) => {
-  console.log('Clicked panel:', category.name);
-  console.log('Panel index:', index);
-
-
-
-};
 
 
 const clear = () =>{
@@ -312,9 +300,7 @@ const toggleFilterPanel = () => {
   width: 80%;
   position: absolute;
   overflow-y: auto;
-  /* top: 40%;
-  left: 50%;
-  transform: translate(-50%,-40%); */
+
 }
 @media (max-width: 599px) {
   #search-xs {

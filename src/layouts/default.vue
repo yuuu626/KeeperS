@@ -5,7 +5,7 @@
       <div class="flex-grow-1">
         <!-- 菜單部分 -->
         <template v-for="menu in menus" :key="menu.title">
-          <v-menu open-on-hover transition="slide-y-transition" location="end">
+          <v-menu open-on-hover transition="slide-y-transition" location="end" >
             <template v-slot:activator="{ props }">
               <v-list-item v-if="menu.show" v-bind="props" :ripple="false" :prepend-icon="menu.icon" class="font-weight-black mt-4" style="color: #474747;">
                 {{ menu.title }}
@@ -19,7 +19,7 @@
                   :to="item.to"
                   link
 
-                >
+                  >
                   <v-list-item-title>{{ item.text }}</v-list-item-title>
                 </v-list-item>
               </template>
@@ -97,7 +97,7 @@
               <v-icon>mdi-menu-down</v-icon>
             </v-btn>
           </template>
-          <v-list>
+          <v-list class="bg-teal-lighten-5 pa-2" density="compact" >
             <template v-for="(item, i) in menu.items" :key="i">
               <v-list-item
                 v-if="item.show"  

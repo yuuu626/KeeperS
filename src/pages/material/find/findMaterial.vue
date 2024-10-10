@@ -8,6 +8,8 @@
                 <v-icon icon="mdi-chevron-right"></v-icon>
               </template>
             </v-breadcrumbs>
+            <!-- 小尺寸新增紐 及 篩選 -->
+            <resourceDialog v-if="mobile" card-title="" type="find" @update="loadMaterials"></resourceDialog>
             <v-responsive max-width="900" class="mx-auto d-xl-none d-lg-block">
                     <v-sheet
                     class="w-100 mx-auto d-inline-block"
@@ -17,19 +19,31 @@
                             multiple
                             mobile-breakpoint="xxl"
                         >
+                        <v-slide-group-item v-slot="{ toggle }">
+                          <v-chip
+                            :style="{
+                              backgroundColor: allSelected ? '#616161' : '#EEEEEE',
+                              color: allSelected ? 'white' : 'black'
+                            }"
+                            class="ma-2"
+                            @click="() => handleAllClick(toggle)"
+                          >
+                            全部
+                          </v-chip>
+                        </v-slide-group-item>
                             <v-slide-group-item
                             v-for="category in categories"
                             :key="category.name"
-                            v-slot="{ isSelected, toggle }"
+                            v-slot="{isSelected, toggle }"
                             >
                             <v-chip
                             :style="{
-                                backgroundColor: isSelected ? '#616161' : '#EEEEEE',
-                                color: isSelected ? 'white' : 'black'
+                                backgroundColor: allSelected || isSelected? '#616161' : '#EEEEEE',
+                                color: allSelected || isSelected ? 'white' : 'black'
                             }"
                             
                                 class="ma-2"
-                                @click="() => handleClick(category.name, toggle)"
+                                @click="() => handleClick(category, toggle)"
                             >
                                 {{ category.name }}
                                 
@@ -44,21 +58,23 @@
                 v-for="provide in filteredItems"
                 :key="provide.id"
                 cols="12"
-                sm="6">
+                md="6">
                     <v-card variant="flat">
                         <v-row class="align-content-center h-100 my-4">
-                          <v-col cols="6"  lg="5" class=" ml-lg-15 ml-5">
+                          <!-- <v-col cols="6"  lg="5" class=" ml-lg-15 ml-5"> -->
+                          <v-col cols="6" sm="7" md="6" class="ml-5 ml-sm-0" >
                             <router-link :to="'/material/find/'+ provide._id">
                               <div class="d-flex justify-content-center b-1 item-img">
                                 <v-img :src="provide.image" contain ></v-img>
                               </div>
                             </router-link>
                             </v-col>
-                            <v-col cols="5" lg="5" class="ml-4">
-                                <v-card-title class="text-h6 font-weight-bold ms-md-1">{{ provide.name }}</v-card-title>
-                                <v-card-subtitle style="font-size: 16px;" class="ms-md-1">{{ provide.organizer }}</v-card-subtitle>
-                                <v-card-text style="font-size: 15px;" class="ms-md-1">數量：{{ provide.quantity }}</v-card-text>
-                                <AppButton text="詳細說明" class="bg-third ms-md-4 ms-3" :to="'/material/find/'+ provide._id"></AppButton>
+                            <!-- <v-col cols="5" lg="5" class="ml-4"> -->
+                            <v-col cols="5" sm="5" md="5">
+                                <v-card-title class="text-h6  text-md-h6 font-weight-bold ms-md-1">{{ provide.name }}</v-card-title>
+                                <v-card-subtitle style="font-size: 16px;" class="ms-md-1 ">{{ provide.organizer }}</v-card-subtitle>
+                                <v-card-text style="font-size: 15px;" class="ms-md-1 pt-sm-1 pb-sm-2">數量：{{ provide.quantity }}</v-card-text>
+                                <AppButton text="詳細說明" class="bg-third ms-md-4 ms-3 " :to="'/material/find/'+ provide._id"></AppButton>
                             </v-col>
                         </v-row>                
                     </v-card>
@@ -123,13 +139,15 @@
 
 
 
+
 </template>
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { definePage } from 'vue-router/auto'
 import { useApi } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
-
+import { useDisplay } from 'vuetify'
+const { mobile } = useDisplay()
 const { api } = useApi()
 const createSnackbar = useSnackbar()
 definePage({
@@ -174,7 +192,7 @@ const categories = ref([
 
 const filterItems = () => {
   // 獲取選中的分類
-  let selectedCategories = categories.value
+  const selectedCategories = categories.value
     .filter(category => category.selected)
     .map(category => category.name);
   const query = searchQuery.value.toLowerCase(); // 將搜尋查詢轉換為小寫
@@ -231,28 +249,31 @@ onMounted(() => {
 
 
 
-const selectedCategory = ref([]);
 
-// 切換選中類別邏輯
-const toggleCategory = (categoryName) => {
-  const index = selectedCategory.value.indexOf(categoryName);
-  if (index === -1) { 
-    // 如果该类别不在已选类别列表中，则添加它
-    selectedCategory.value.push(categoryName);
-  } else { 
-    // 如果该类别已经被选中，则取消选中
-    selectedCategory.value.splice(index, 1);
+const handleClick = (category, toggle) => {
+  if (allSelected.value) {
+    // 如果之前是全选状态,现在取消某个类别
+    allSelected.value = false;
+    categories.value.forEach(cat => {
+      cat.selected = cat === category;
+    });
+  } else {
+    category.selected = !category.selected;
+    allSelected.value = categories.value.every(cat => cat.selected);
   }
-};
-
-// 解決不能重複使用@click的問題(toggle 為內建的語法，用來更改樣式)
-const handleClick = (categoryName, toggle) => {
-  toggleCategory(categoryName); 
-  toggle(); 
-  console.log(selectedCategory)
+  toggle();
+  filterItems();
 };
 
 
+const handleAllClick = (toggle) => {
+  allSelected.value = !allSelected.value;
+  categories.value.forEach(category => {
+    category.selected = allSelected.value;
+  });
+  if (toggle) toggle();
+  filterItems();
+};
 
 
 
@@ -301,13 +322,25 @@ loadMaterials()
 
 </script>
 <style scoped>
+
 .v-card{
   max-width: 650px;
   max-height: 300px;
 }
 .item-img{
-  width: 240px;
-  height:240px;
+  width: 85%;
+}
+@media (min-width: 960px) and (max-width: 1280px) {
+  .item-img{
+    margin-left: 30px;
+  width: 90%;
+}
+}
+@media (min-width: 600px) and (max-width: 960px) {
+  .item-img{
+    margin-left: 50px;
+    width: 65%;
+}
 }
 .b-1{
   border: 1px solid #7a7a7a;

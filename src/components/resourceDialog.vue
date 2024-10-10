@@ -1,12 +1,25 @@
 <template>
   <v-btn
+    v-if="mobile"
     @click="openDialog(null)"
-    class="rounded-lg bg-info b-1 font-weight-black text-body-1 mt-10"
+    class="bg-info b-1 font-weight-black text-body-1 mt-10 sm-btn"
+    variant="text"
+    :ripple="false"
+    >{{cardTitle}}
+    <v-icon size="x-large">mdi-plus</v-icon>
+    <v-tooltip
+        activator="parent"
+        location="top"
+    >
+    發布需求
+    </v-tooltip>
+</v-btn>
+<v-btn
+    v-else
+    @click="openDialog(null)"
+    class="rounded-lg bg-info b-1 font-weight-black text-body-1 mt-10 lg-btn"
     prepend-icon="mdi-plus"
     variant="text"
-    height="50"
-    width="150"
-    id="create"
     :ripple="false"
     >{{cardTitle}}
 </v-btn>
@@ -33,65 +46,69 @@
                     </v-row>
                     <v-row>
                         <!-- 物資名稱 -->
-                        <v-col cols="12" md="3" class="my-auto text-left ps-6">
+                        <v-col cols="4" sm="3"class="my-auto text-left ps-6">
                         <label class="form-label">物資名稱</label>
                         </v-col>
-                        <v-col cols="12" md="9">
+                        <v-col cols="8" sm="9">
                             <inputText
                             v-model="name.value.value"
                             :error-messages="name.errorMessage.value"
+                            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                             />
                         </v-col>
                         <!-- 需求量 -->
-                        <v-col cols="12" md="3" class="my-auto text-left ps-6">
+                        <v-col cols="4" sm="3" class="my-auto text-left ps-6">
                         <label class="form-label">{{numberTitle}}</label>
                         </v-col>
-                        <v-col cols="12" md="9">
+                        <v-col cols="8" sm="9">
                             <inputText
                             type="number"
                             min="0"
                             v-model=" quantity.value.value"
                             :error-messages=" quantity.errorMessage.value"
+                            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                             />
                         </v-col>
                         <!-- 物資類別 -->
-                        <v-col cols="12" md="3" class="my-auto text-left ps-6">
+                        <v-col cols="4" sm="3" class="my-auto text-left ps-6">
                         <label class="form-label">物資類別</label>
                         </v-col>
-                        <v-col cols="12" md="9">
+                        <v-col cols="8" sm="9">
                             <v-select
                                 v-model=" category.value.value"
                                 :error-messages=" category.errorMessage.value"
                                 label="選擇" 
                                 variant="outlined" 
-                                density="comfortable" 
+                                :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                                 dense
                                 :items="categories"
                                 hide-details
                             ></v-select>
                         </v-col>
                         <!-- 需求介紹 -->
-                        <v-col cols="12" md="3" class="my-auto text-left ps-6">
+                        <v-col cols="4" sm="3" class="my-auto text-left ps-6">
                             <label class="form-label" >{{descriptionTitle}}</label>
                         </v-col>
-                        <v-col cols="12" md="9">
+                        <v-col cols="8" sm="9">
                             <inputText
                             v-model=" description.value.value"
                             :error-messages=" description.errorMessage.value"
+                            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                             />
                         </v-col>
                         <!-- 單位名稱 -->
-                        <v-col cols="12" md="3" class="my-auto text-left ps-6">
+                        <v-col cols="4" sm="3" class="my-auto text-left ps-6">
                         <label class="form-label">單位名稱</label>
                         </v-col>
-                        <v-col cols="12" md="9">
+                        <v-col cols="8" sm="9">
                             <inputText
                             v-model="organizer.value.value"
                             :error-messages="organizer.errorMessage.value"
+                            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                             />
                         </v-col>
                     </v-row>
-                    <v-card-actions>
+                    <v-card-actions class="mt-2">
                         <div class="mx-auto">
                         <v-btn variant="text"class="rounded-xl b-1 bg-accent" density="comfortable" type="submit" :loading="isSubmitting">送出</v-btn>
                         <v-btn
@@ -116,6 +133,8 @@ import * as yup from 'yup'
 import { useForm, useField } from 'vee-validate'
 import { useApi } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
+import { useDisplay } from 'vuetify'
+const { mobile } = useDisplay()
 const emit =defineEmits(["update"])
 const { apiAuth } = useApi()
 const createSnackbar = useSnackbar()
@@ -260,10 +279,36 @@ try {
 border: 1px solid #7a7a7a;
 }
 .form-label{
- font-size: 20px;
+ font-size: 18px;
  font-weight: bold;
  color: rgb(80, 80, 80);
 }
 
+.sm-btn{
+    z-index: 5;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    position: fixed;
+    right: 8%;
+    bottom: 4%;
+    }
 
+@media(min-width:600px){
+    .form-label{
+    font-size: 20px;
+    }
+}
+@media(max-width:960px){
+    .v-card{
+        width: 100%;
+    }
+}
+@media(min-width:1280px){
+    .lg-btn{
+    height: 50px;
+    width: 150px;
+    }
+}
 </style>

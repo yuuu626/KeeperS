@@ -6,12 +6,10 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import axios from 'axios';
 import "leaflet/dist/leaflet.css";
 import 'leaflet.locatecontrol/dist/L.Control.Locate.css'; // 导入 CSS
 import * as L from 'leaflet';
-import 'leaflet.locatecontrol'; // 导入插件
-import 'leaflet.markercluster';
+import 'leaflet.locatecontrol'; 
 import { useApi } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -93,34 +91,7 @@ const initializeMap = () => {
     console.error('Map initialization failed.');
   }
 };
-  // const Now = new L.Icon({
-  //   iconUrl: 'https://cdn-icons-png.flaticon.com/512/3138/3138736.png',
-  //   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  //   iconSize: [40, 41],
-  //   iconAnchor: [12, 41],
-  //   popupAnchor: [1, -34],
-  //   shadowSize: [41, 41]
-  // });
-
-  // // 獲取使用者位置
-  // if (navigator.geolocation) {
-  //   navigator.geolocation.getCurrentPosition( // web API 用於獲取用戶當前位置
-  //     (position) => {
-  //       const lat = position.coords.latitude;
-  //       const lng = position.coords.longitude;
-  //       L.marker([lat, lng], { icon: Now })
-  //         .addTo(initialMap.value) // 標記放到地圖上
-  //         .bindPopup('<h2>目前位置</h2>')
-  //         .openPopup();
-  //       initialMap.value.setView([lat, lng], 12);
-  //     },
-  //     (error) => {
-  //       console.error('Error getting user location:', error);
-  //     }
-  //   );
-  // } else {
-  //   console.warn('Geolocation is not supported by this browser.');
-  // }
+ 
 
 const loadMapData = async () => {
   try {

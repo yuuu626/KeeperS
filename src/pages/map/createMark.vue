@@ -30,7 +30,7 @@
                 label="輸入資源地址"
                 @update:model-value="normalizeAddress"
                 ></Search>
-                <v-row class="my-5">
+                <v-row class="my-0">
                     <!-- 服務名稱 -->
                     <v-col cols="12" md="3"  class="my-auto text-left ps-1">
                     <label class="form-label">服務名稱</label>
@@ -39,6 +39,7 @@
                         <inputText 
                         v-model="name.value.value"
                         :error-messages="name.errorMessage.value"
+                        density="comfortable"
                         />
                     </v-col>
                     <!-- 服務電話 -->
@@ -49,6 +50,7 @@
                         <inputText 
                         v-model="tel.value.value"
                         :error-messages="tel.errorMessage.value"
+                        density="comfortable"
                         />
                     </v-col>
                     <!-- 服務類別 -->
@@ -243,12 +245,15 @@
                         variant="outlined" clearable
                         v-model="description.value.value"
                         :error-messages="description.errorMessage.value"
+                        hide-details
+                        density="compact"
+                        auto-grow
                         ></v-textarea>
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col class="text-center" >
-                        <submitButton type="submit" class="b-1 bg-accent  mb-8" @click="addMarker"></submitButton>
+                    <v-col class="text-center " >
+                        <submitButton type="submit" class="b-1 bg-accent mb-5" @click="addMarker"></submitButton>
                     </v-col>
                 </v-row>
             </v-form>
@@ -286,7 +291,7 @@
                 :error-messages="addressError "
                 label="輸入資源地址"
                 ></Search>
-                <v-row class="my-5">
+                <v-row class="my-5 ">
                     <!-- 服務名稱 -->
                     <v-col cols="3" md="2"class="my-auto text-left ps-6 text-center">
                       <label class="form-label">服務名稱</label>
@@ -960,11 +965,11 @@ const sheet = ref(false);
 
 
 @media (min-width: 1280px) and (max-width: 1775px) {
-  .form-label{
-  font-size: 16px;
-  font-weight: bold;
-  color: rgb(80, 80, 80);
-}
+    .form-label{
+    font-size: 16px;
+    font-weight: bold;
+    color: rgb(80, 80, 80);
+  }
 }
 .add-resource-btn {
   position: fixed;
