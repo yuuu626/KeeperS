@@ -145,7 +145,8 @@ const filterItems = () => {
   let selectedCategories = categories.value
     .filter(category => category.selected)
     .map(category => category.name);
-  const query = searchQuery.value.toLowerCase(); // 將搜尋查詢轉換為小寫
+    const query = searchQuery.value?searchQuery.value.toLowerCase():''; 
+
 
   if (allSelected.value) {
     // 如果「所有物品」被勾選，顯示所有符合搜尋查詢的項目

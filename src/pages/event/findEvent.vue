@@ -203,7 +203,7 @@
                                 <div  class="d-flex justify-content-center b-1 mt-2 mb-2 bg-white img-container">
                                     <v-img :src="event.image" contain></v-img>
                                 </div>
-                                <v-card-title class="font-weight-black " style="font-size: 1.1rem;width: 215px;word-wrap: break-word;">{{ event.title }}
+                                <v-card-title class="font-weight-black " style="font-size: 1.1rem;">{{ event.title }}
                                 </v-card-title>
                                 <v-card-subtitle style="width: 200px;" class="font-weight-black" >{{ event.organizer }}</v-card-subtitle>
                                 <v-chip density="compact" class="mt-2 me-1"v-for="item in event.category" :key="item">{{ item }}</v-chip>
@@ -296,6 +296,7 @@ definePage({
 })
 
 const openDialog = (items) => {
+  resetForm()
   dialog.value = true
 }
 
@@ -438,7 +439,8 @@ const handleClick = (categoryName, toggle) => {
 
 // 過濾選中的類別
 const filteredEvents = computed(() => {
-  const query = searchQuery.value.toLowerCase();
+      const query = searchQuery.value?searchQuery.value.toLowerCase():''; // 將搜尋查詢轉換為小寫
+
 
   return events.value.filter(event => {
     // 事件必须匹配所有选中的类别
