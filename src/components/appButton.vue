@@ -3,8 +3,7 @@
         type="submit"
         :text="text"
         variant="text"
-        class="rounded-xl b-1"
-        style="font-weight: 630;"
+        class="rounded-xl b-1 font-weight-bold ms-3"
         density="comfortable"
         :ripple="false"
         >
@@ -20,3 +19,11 @@ const props = defineProps({
   }
 });
 </script>
+<style scoped>
+.v-btn{
+  max-width: 100px;
+  display: flex ;
+  align-items: center ;
+  justify-content: center ;
+}
+</style>

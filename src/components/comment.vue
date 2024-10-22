@@ -2,95 +2,109 @@
 <!-- 留言板 -->
 <v-row class="mt-10">
   <v-col>
-      <div class="b-1 info-margin  text-center text-body-1 pa-2 bg-accent rounded-t-lg font-weight-bold" style="max-width:150px;padding: 0;border-bottom: 0px;">留言板</div>
+      <div class="b-1 info-margin text-center text-body-1 pa-1 pa-sm-2 bg-accent rounded-t-lg font-weight-bold comment-tag">留言板</div>
       <div class="b-1 pa-5 info-margin">
         <v-row v-for="msg in message" :key="msg._id">
-          <v-col cols="5">
-            <div class="pa-4">
+          <v-col cols="10" md="9">
+            <div class="pa-1 pa-md-4">
               <div>
-                <v-avatar color="primary b-1" class="me-3" size="large">
-                  <v-img :src="msg.user.avatar || 'default-avatar-url'"></v-img>
+                <v-avatar color="primary b-1" class="me-3" :size="$vuetify.display.xs ? 'default' : 'large'">
+                  <v-img :src="msg.user.avatar"></v-img>
                 </v-avatar>
-                <span class="ml-1">{{ msg.user.username }}</span>
+                <span class="ml-1 font-weight-bold name-fz">{{ msg.user.username }}</span>
               </div>
               <div v-if="currentEditingId !== msg._id">
                 <!-- 顯示純文字 -->
-                <p class="ml-16 text-body-2 d-inline">{{ msg.content }}</p>
-                <!-- 編輯按鈕 -->
-                <!-- 條件句部分表示留言的id與登入id相同時才會顯示 -->
-                <v-btn icon="mdi-pencil" v-if="msg.user._id == currentUser" @click="startEditing(msg._id, msg.content)" variant="text" class="d-inline" color="grey"></v-btn>
-                <!-- 刪除按鈕 -->
-                <v-btn icon="mdi-delete" v-if="msg.user._id == currentUser" @click="deleteMessage(msg._id)" variant="text" class="d-inline" color="grey"></v-btn>
+                <p class="mt-4 ml-4 ml-sm-16 info-fz" style="white-space: pre-line;word-wrap: break-word;">{{ msg.content }}</p>
               </div>
-              <div v-else style="width: 800;">
-                <v-row class="mt-2 mx-8">
-                  <div class="pa-4">
+              <div v-else class="w-100 h-100 mt-4">
+                <!-- <v-row class="mt-2 mx-8">
+                  <div class="pa-4"> -->
                     <!-- 顯示輸入框 -->
                     <v-textarea
                       v-model="currentEditingContent"
                       placeholder="請輸入新的留言內容"
-                      rows="4"
                       variant="outlined" 
-                      width="530" 
-                      clearable
+                      :rows="$vuetify.display.xs ? '3' : '4'"
+                      :clearable="!$vuetify.display.xs"
                       hide-details
-                      class="ms-1"
+                      class="ms-1 w-100 w-sm-75 w-md-100 px-3 pb-3"
+                      auto-grow
+                      maxlength="150" 
+                      style="word-break: break-word;"
                     ></v-textarea>
-                  </div>
-                </v-row>
-                <v-row>
-                  <v-col cols="12">
-                    <div style="width: 500px;">
-                      <v-btn @click="saveEdit(msg._id)" variant="text" class="rounded-md b-1 bg-primary me-2" height="30">儲存</v-btn>
-                      <v-btn @click="cancelEdit" variant="text" class="rounded-md b-1 bg-info" height="30">取消</v-btn>
+                    <div style="height: 35px;" class="w-100 w-sm-75 w-md-100 pe-2 text-end">
+                      <v-btn @click="saveEdit(msg._id)" variant="text" class="rounded-md b-1 bg-primary me-2 d-inline-block" :height="$vuetify.display.xs ? '25' : '30'">儲存</v-btn>
+                      <v-btn @click="cancelEdit" variant="text" class="rounded-md b-1 bg-info d-inline-block" :height="$vuetify.display.xs ? '25' : '30'">取消</v-btn>
                     </div>
-                  </v-col>
-                </v-row>
-              </div>
             </div>
+            </div>
+          </v-col>
+          <v-col cols="2" md="3" class="text-end">
+            <v-menu location="end" class="cursor-pointer">
+            <template v-if="msg.user._id == currentUser" v-slot:activator="{ props }">
+              <v-btn icon="mdi-dots-vertical" variant="plain" v-bind="props" :size="$vuetify.display.xs ? 'small' : 'default'"></v-btn>
+            </template>
+            <v-list density="comfortable">
+              <v-list-item>
+                <!-- 條件句部分表示留言的id與登入id相同時才會顯示 -->
+                <v-list-item-title @click="startEditing(msg._id, msg.content)" variant="text" >編輯</v-list-item-title>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-title @click="deleteMessage(msg._id)" variant="text" >刪除</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
           </v-col>
         </v-row>
                 <!-- 當沒有留言時顯示提示訊息 -->
-                 <v-row class="my-10">
+                <v-row class="mt-4 mt-sm-5 mt-md-8 mt-lg-10 mb-2">
                   <div v-if="message.length === 0" class="text-center text-body-2 mt-4 mx-auto ">
                     <h1 style="color:#bfbfbf;" class="mb-15">
                       目前暫無任何留言
                     </h1>
                   </div>
-                
                   <v-divider></v-divider>
                 </v-row>
                 <!-- 留言發布 -->
-                 <v-row class="my-2">
-                <div class="pa-4">
+                <v-row class="my-2">
+                  <v-col cols="12">
+                    <div class="pa-1 pa-md-4" v-for="file in files">
+                    <div>
+                      <v-avatar color="primary b-1" class="me-3" :size="$vuetify.display.xs ? 'default' : 'large'">
+                        <v-img :src="file.avatar"></v-img>
+                      </v-avatar>
+                      <span class="ml-1 font-weight-bold name-fz">{{ file.username }}</span>
+                    </div>
+                  </div>
+                  </v-col>
+                  <v-col cols="12" md="9">
                     <v-form @submit.prevent="submit" :disabled="isSubmitting">
-                        <v-textarea 
-                        ref="commentInput"
-                        v-model="comment.value.value"
-                        :error-messages="comment.errorMessage.value"
-                        placeholder="請輸入您的留言或提問"
-                        variant="outlined" 
-                        width="600" 
-                        maxlength="20" 
-                        counter
-                        clearable
-                        >
-                            <template v-slot:prepend v-for="file in files">
-                            <v-avatar color="primary " class="me-1 b-1" size="large">
-                                <v-img :src="file.avatar"></v-img>
-                            </v-avatar>
-                            </template>
-                        </v-textarea>
-                        <v-btn
-                        type="submit"
-                        variant="text"
-                        class="rounded-md b-1 bg-accent mt-2"
-                        density="comfortable"
-                        :ripple="false"
-                        >送出</v-btn>
-                </v-form>
-                </div>
-                </v-row>
+                      <v-textarea 
+                      ref="commentInput"
+                      v-model="comment.value.value"
+                      :error-messages="comment.errorMessage.value"
+                      placeholder="請輸入您的留言或提問"
+                      variant="outlined" 
+                      maxlength="150" 
+                      counter
+                      :clearable="!$vuetify.display.xs"
+                      :rows="$vuetify.display.xs ? '4' : '5'"
+                      auto-grow
+                      class="ms-1 w-100 w-sm-75 w-md-100 px-3 pb-1"
+                      ></v-textarea>
+                    <div style="height: 35px;" class="pe-2 text-end w-100 w-sm-75 w-md-100">
+                      <v-btn
+                      type="submit"
+                      variant="text"
+                      class="rounded-md b-1 bg-accent"
+                      density="comfortable"
+                      :ripple="false"
+                      >送出</v-btn>
+                    </div>
+                  </v-form>
+                </v-col>
+              </v-row>
             </div>
             </v-col>
         </v-row>
@@ -265,17 +279,38 @@ const deleteMessage = async (id) => {
   border: 1px solid #7a7a7a;
 }
 
-.info-margin{
-    margin: 0 1rem 0 1rem ;
+.comment-tag{
+  max-width:105px;
+  padding: 0;
+  border-bottom: 0px;
 }
 
-@media(min-width:1280px){
-  .info-margin{
-    margin: 0 6rem 0 6rem ;
+.name-fz{
+  font-size: 1rem;
+}
+.info-fz{
+  font-size: 15px;
+}
+@media(min-width:400px) {
+  .comment-tag{
+    max-width:120px;
   }
 }
-.v-btn{
-    position: relative;
-    left: 89%;
+@media(min-width:600px) {
+  .comment-tag{
+    max-width:150px;
+  }
+  .name-fz{
+    font-size: 1.1rem;
+  }
+  .info-fz{
+    font-size: 1rem;
+  }
 }
+@media(min-width:1280px){
+  .info-margin{
+    margin: 0 1rem 0 5rem ;
+  }
+}
+
 </style>

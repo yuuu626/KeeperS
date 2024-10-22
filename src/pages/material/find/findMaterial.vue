@@ -301,6 +301,7 @@ const loadMaterials = async () => {
     pages.value = Math.ceil(data.result.total / ITEMS_PER_PAGE) // 總頁數 = 總商品數量 / 每頁數量
     provides.value.splice(0, provides.value.length, ...data.result.data) // 更新前端的商品列表
     filterItems()
+    console.log(provides)
     console.log(provides.value)
   } catch (error) {
     console.log(error)
@@ -329,6 +330,7 @@ loadMaterials()
 }
 .item-img{
   width: 85%;
+  aspect-ratio: 1; 
 }
 @media (min-width: 960px) and (max-width: 1280px) {
   .item-img{
