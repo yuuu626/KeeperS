@@ -1,5 +1,5 @@
 <template>
-  <div class="b-1 w-75 mx-auto" >
+  <div class="b-1 w-100 w-md-75 mx-auto" >
     <!-- 活動貼文管理 -->
     <h2 class="bb-1 bg-primary text-center mx-auto py-1">帳號管理</h2>
             <v-data-table-server
@@ -7,7 +7,7 @@
                 v-model:sort-by="tableSortBy"
                 v-model:page="tablePage"
                 :items="tableItems"
-                :headers="tableHeaders"
+                :headers="$vuetify.display.smAndDown ? mobileHeaders : tableHeaders"
                 :loading="tableLoading"
                 :items-length="tableItemsLength"
                 :search="tableSearch"
@@ -15,7 +15,7 @@
                 @update:sort-by="tableLoadItems(false)"
                 @update:page="tableLoadItems(false)"
                 hover
-                class="mb-15 px-8 rounded-lg"
+                :class="{'px-2': $vuetify.display.smAndDown, 'px-8': $vuetify.display.mdAndUp}"
                 style="font-size: 15px;"
             >
             <!-- 搜尋欄位 -->
@@ -51,8 +51,7 @@ import { useApi } from '@/composables/axios'
 const { api,apiAuth } = useApi()
 const createSnackbar = useSnackbar()
 
-// 活動管理
-// 一頁10個
+
 const tableItemsPerPage = ref(10)
 // 可以一次支援很多欄位去做排序，前端要支援這個功能的話後端的api就要把這個功能寫出來(這裡只舉一個欄位做排序)
 const tableSortBy = ref([
@@ -71,7 +70,10 @@ const tableItemsLength = ref(0) // 全部有多少筆資料
 const tableSearch = ref('') // 搜尋的文字
 
 
-
+const mobileHeaders = [
+  { title: '使用者', align: 'center', key: '_id' },
+  { title: '信箱', align: 'center', key: 'email' }
+]
 
 
 const tableLoadItems = async (reset) => {
@@ -128,5 +130,14 @@ watch(tableSearch, () => {
 }
 .bb-1{
   border-bottom: 1px solid #7a7a7a;
+}
+@media (max-width: 600px) {
+  ::v-deep .v-data-table__thead {
+    font-size: 13px;
+  }
+  
+  ::v-deep .v-data-table {
+    font-size: 13px;
+  }
 }
 </style>

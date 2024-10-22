@@ -224,7 +224,6 @@ const tableLoadItems = async (reset) => {
     // 取得表格資料
     // get(網址參數，請求的設定)
     const { data } = await apiAuth.get('/user/event', { // 發送請求從後端取得特定資料
-      
       // 設定路由的參數
       params: {
         page: tablePage.value,
@@ -235,7 +234,7 @@ const tableLoadItems = async (reset) => {
       }
       
     })
-    // console.log(data)
+    console.log(data)
     tableItems.value.splice(0, tableItems.value.length, ...data.result.data) // 清空所有資料，再從後端取得新資料
     tableItemsLength.value = data.result.total
     // console.log(tableItems)

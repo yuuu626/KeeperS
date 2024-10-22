@@ -32,7 +32,7 @@
                 ></Search>
                 <v-row class="my-0">
                     <!-- 服務名稱 -->
-                    <v-col cols="12" md="3"  class="my-auto text-left ps-1">
+                    <v-col cols="12" md="3"  class="my-auto text-left ps-2 pe-0">
                     <label class="form-label">服務名稱</label>
                     </v-col>
                     <v-col cols="12" md="9">
@@ -43,7 +43,7 @@
                         />
                     </v-col>
                     <!-- 服務電話 -->
-                    <v-col cols="12" md="3" class="my-auto text-left ps-1">
+                    <v-col cols="12" md="3" class="my-auto text-left ps-2 pe-0">
                     <label class="form-label">服務電話</label>
                     </v-col>
                     <v-col cols="12" md="9">
@@ -54,7 +54,7 @@
                         />
                     </v-col>
                     <!-- 服務類別 -->
-                    <v-col cols="12" md="3" class="my-auto text-left ps-1">
+                    <v-col cols="12" md="3" class="my-auto text-left ps-2 pe-0">
                     <label class="form-label">服務類別</label>
                     </v-col>
                     <v-col cols="12" md="9" class="my-auto">
@@ -71,7 +71,7 @@
                         </v-select>
                     </v-col>
                         <!-- 服務項目 -->
-                        <v-col cols="12" md="3" class="mt-2 text-left ps-1">
+                        <v-col cols="12" md="3" class="mt-2 text-left ps-2 pe-0">
                     <label class="form-label">服務項目</label>
                     </v-col>
                     <v-col cols="12" md="9">
@@ -235,8 +235,7 @@
                             </v-expansion-panel>
                         </v-expansion-panels>
                     </v-col>
-                    <!-- 需求介紹 -->
-                    <v-col cols="12" md="3" class="text-left ps-1">
+                    <v-col cols="12" md="3" class="text-left ps-2 pe-0">
                         <label class="form-label">服務介紹</label>
                     </v-col>
                     <v-col cols="12" md="9">

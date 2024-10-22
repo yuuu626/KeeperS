@@ -53,7 +53,7 @@
               style="width: 48%;"
               density="comfortable"
               variant="outlined"
-              @change="onCityChange"
+
               >
               </v-select>
               <v-select  

@@ -1,232 +1,227 @@
 <template>
-        <!-- 新增活動對話框 -->
-            <v-btn
-                v-if="user.isLogin"
-                @click="openDialog(null)"
-                class="bg-third b-1 p-0"
-                variant="text"
-                id="create"
-                >
-                <v-icon size="x-large">mdi-plus</v-icon>
-                <v-tooltip
-                    activator="parent"
-                    location="top"
-                >
-                新增活動
-                </v-tooltip>
-            </v-btn>
-            <v-dialog max-width="700" v-model="dialog">
-                <v-card>
-                        <v-container>
-                            <v-card-title class="font-weight-black text-center text-h4">新增活動</v-card-title>   
-                            <v-card-text>
-                                <v-form  @submit.prevent="submit" :disabled="isSubmitting">
-                                    <v-row>
-                                        <v-col >
-                                            <!-- plugins > index.js 要先引入套件 -->
-                                            <vue-file-agent
-                                                v-model="fileRecords"
-                                                v-model:raw-model-value="rawFileRecords"
-                                                accept="image/jpeg,image/png"
-                                                deletable
-                                                max-size="1MB"
-                                                help-text="選擇檔案或拖曳到這裡"
-                                                :error-text="{ type: '檔案格式不支援', size: '檔案大小不能超過 1MB' }"
-                                                ref="fileAgent"
-                                                ></vue-file-agent>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <!-- 活動名稱 -->
-                                        <v-col cols="4"class="my-auto text-center">
-                                        <label class="form-label">活動名稱：</label>
-                                        </v-col>
-                                        <v-col cols="8" >
-                                            <inputText  
-                                            v-model="title.value.value"
-                                            :error-messages="title.errorMessage.value"
-                                            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
-                                            />
-                                        </v-col>
-                                        <!-- 活動地點 -->
-                                        <v-col cols="4"class="my-auto text-center">
-                                            <label class="form-label">活動地點：</label>
-                                        </v-col>
-                                        <v-col cols="8">
-                                            <inputText 
-                                            v-model=" address.value.value"
-                                            :error-messages=" address.errorMessage.value"
-                                            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
-                                            ></inputText>
-                                        </v-col>
-                                        <!-- 活動類別 -->
-                                        <v-col cols="4"class="my-auto text-center">
-                                            <label class="form-label">活動類別：</label>
-                                        </v-col>
-                                        <v-col cols="8">
-                                          <v-select
-                                                v-model="category.value.value"
-                                                :error-messages="category.errorMessage.value"
-                                                label="選擇" 
-                                                variant="outlined" 
-                                                :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
-                                                dense
-                                                :items="chips"
-                                                hide-details
-                                                multiple
-                                            >
-                                          </v-select>
-                                        </v-col>
-                                        <!-- 活動時間 -->
-                                        <v-col cols="4" class="my-auto text-center px-0">
-                                            <label class="form-label">活動時間：</label>
-                                        </v-col>
-                                        <v-col cols="8" >
-                                            <inputText
-                                            v-model="date.value.value"
-                                            :error-messages="date.errorMessage.value"
-                                            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
-                                            />
-                                        </v-col>
-                                        
+  <!-- 新增活動對話框 -->
+      <v-btn
+      v-if="user.isLogin"
+      @click="openDialog(null)"
+      class="bg-third b-1 p-0"
+      variant="text"
+      id="create"
+      >
+      <v-icon size="x-large">mdi-plus</v-icon>
+      <v-tooltip
+      activator="parent"
+      location="top"
+      >
+      新增活動
+      </v-tooltip>
+      </v-btn>
+      <v-dialog max-width="700" v-model="dialog">
+        <v-card>
+          <v-container class="dialog-container">
+            <v-card-title class="font-weight-black text-center text-h4">新增活動</v-card-title>   
+            <v-card-text>
+              <v-form  @submit.prevent="submit" :disabled="isSubmitting">
+                <v-row>
+                  <v-col >
+                    <!-- plugins > index.js 要先引入套件 -->
+                    <vue-file-agent
+                      v-model="fileRecords"
+                      v-model:raw-model-value="rawFileRecords"
+                      accept="image/jpeg,image/png"
+                      deletable
+                      max-size="1MB"
+                      help-text="選擇檔案或拖曳到這裡"
+                      :error-text="{ type: '檔案格式不支援', size: '檔案大小不能超過 1MB' }"
+                      ref="fileAgent"
+                      ></vue-file-agent>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <!-- 活動名稱 -->
+                  <v-col cols="4" class="my-auto text-center dialog-col">
+                    <label class="form-label">活動名稱：</label>
+                  </v-col>
+                  <v-col cols="8" >
+                    <inputText  
+                    v-model="title.value.value"
+                    :error-messages="title.errorMessage.value"
+                    :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                    />
+                  </v-col>
+                  <!-- 活動地點 -->
+                  <v-col cols="4"class="my-auto text-center dialog-col">
+                      <label class="form-label">活動地點：</label>
+                  </v-col>
+                  <v-col cols="8">
+                    <inputText 
+                    v-model=" address.value.value"
+                    :error-messages=" address.errorMessage.value"
+                    :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                    ></inputText>
+                  </v-col>
+                  <!-- 活動類別 -->
+                  <v-col cols="4"class="my-auto text-center dialog-col">
+                      <label class="form-label">活動類別：</label>
+                  </v-col>
+                  <v-col cols="8">
+                    <v-select
+                      v-model="category.value.value"
+                      :error-messages="category.errorMessage.value"
+                      label="選擇" 
+                      variant="outlined" 
+                      :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                      dense
+                      :items="chips"
+                      hide-details
+                      multiple
+                      >
+                    </v-select>
+                  </v-col>
+                  <!-- 活動時間 -->
+                  <v-col cols="4" class="my-auto text-center px-0 dialog-col">
+                      <label class="form-label">活動時間：</label>
+                  </v-col>
+                  <v-col cols="8" >
+                    <inputText
+                    v-model="date.value.value"
+                    :error-messages="date.errorMessage.value"
+                    :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                    />
+                  </v-col>
+                  <!-- 主辦單位 -->
+                  <v-col cols="4" class="my-auto text-center dialog-col">
+                    <label class="form-label">主辦單位：</label>
+                  </v-col>
+                  <v-col cols="8">
+                    <inputText
+                    v-model="organizer.value.value"
+                    :error-messages="organizer.errorMessage.value"
+                    :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                    />
+                  </v-col>
 
-                                        <!-- 主辦單位 -->
-                                        <v-col cols="4" class="my-auto text-center">
-                                            <label class="form-label">主辦單位：</label>
-                                        </v-col>
-                                        <v-col cols="8">
-                                            <inputText
-                                            v-model="organizer.value.value"
-                                            :error-messages="organizer.errorMessage.value"
-                                            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
-                                            />
-                                        </v-col>
-
-                                        <!-- 活動介紹 -->
-                                        <v-col cols="4" class="text-center">
-                                        <label class="form-label">活動介紹：</label>
-                                        </v-col>
-                                        <v-col cols="8" >
-                                            <v-textarea
-                                                auto-grow
-                                                label="輸入文字"
-                                                variant="outlined" 
-                                                clearable
-                                                hide-details
-                                                v-model="description.value.value"
-                                                :error-messages="description.errorMessage.value"
-                                                :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
-                                            ></v-textarea>
-                                        </v-col>
-                                    </v-row>
-                                    <v-card-actions>
-                                <div class="mx-auto">
-                                    <v-btn variant="text"class="rounded-xl b-1 bg-accent" density="comfortable" type="submit" :loading="isSubmitting">送出</v-btn>
-                                    <v-btn
-                                    text="取消"
-                                    variant="text"
-                                    class="rounded-xl b-1 bg-info"
-                                    density="comfortable"
-                                    @click="closeDialog()"
-                                    ></v-btn>
-                                </div>
-                            </v-card-actions>
-                                </v-form>
-                            </v-card-text>
-                        </v-container>
-                    </v-card>
-            </v-dialog>
-
-
-        <!-- 搜尋欄 -->
-        <!-- <v-container> -->
-            <!-- 麵包屑 - 顯示目前頁面位置 -->
-          <v-container>
-            <v-breadcrumbs :items="items">
-              <template v-slot:divider>
-                <v-icon icon="mdi-chevron-right"></v-icon>
-              </template>
-            </v-breadcrumbs>
+                  <!-- 活動介紹 -->
+                  <v-col cols="4" class="text-center dialog-col mt-3">
+                    <label class="form-label">活動介紹：</label>
+                  </v-col>
+                  <v-col cols="8" >
+                    <v-textarea
+                    auto-grow
+                    label="輸入文字"
+                    variant="outlined" 
+                    clearable
+                    hide-details
+                    v-model="description.value.value"
+                    :error-messages="description.errorMessage.value"
+                    :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                    ></v-textarea>
+                  </v-col>
+                </v-row>
+                <v-card-actions>
+              <div class="mx-auto">
+                  <v-btn variant="text"class="rounded-xl b-1 bg-accent" density="comfortable" type="submit" :loading="isSubmitting">送出</v-btn>
+                  <v-btn
+                  text="取消"
+                  variant="text"
+                  class="rounded-xl b-1 bg-info"
+                  density="comfortable"
+                  @click="closeDialog()"
+                  ></v-btn>
+              </div>
+          </v-card-actions>
+              </v-form>
+            </v-card-text>
           </v-container>
-            <v-responsive max-width="700px" class="mx-auto">
-              <v-text-field
-              variant="outlined"
-              label="搜尋"
-              prepend-inner-icon="mdi-magnify"
-              hide-details
-              single-line
-              density="comfortable"
-              clearable
-              class="bg-white mx-5 mt-5 my-5"
-              v-model="searchQuery"
-              >
-              </v-text-field>
-            </v-responsive>
-            <div class="text-center">
-              <v-responsive max-width="900" class="mx-auto">
-                    <v-sheet
-                    class="w-100 mx-auto d-inline-block"
-                    >
-                        <v-slide-group
-                            show-arrows
-                            multiple
-                            mobile-breakpoint="xxl"
-                        >
-                            <v-slide-group-item
-                            v-for="category in categories"
-                            :key="category.name"
-                            v-slot="{ isSelected, toggle }"
-                            >
-                            <v-chip
-                            :style="{
-                                backgroundColor: isSelected ? '#616161' : '#EEEEEE',
-                                color: isSelected ? 'white' : 'black'
-                            }"
-                            
-                                class="ma-2"
-                                @click="() => handleClick(category.name, toggle)"
-                            >
-                                {{ category.name }}
-                                
-                            </v-chip>
-                            </v-slide-group-item>
-                        </v-slide-group>
-                    </v-sheet>
-                  </v-responsive>
-                  <div class="mx-auto" style="width:100%;">
-                  <!-- <v-row class="my-3 d-flex w-lg-75 w-md-100 mx-auto px-sm-5" > -->
-                  <v-row class="my-3 d-flex " >
-                    <v-col cols="12" sm="6" md="4" lg="3" v-for="event in filteredEvents" :key="event._id" class="mx-0">
-                      <router-link :to="'/event/'+ event._id" style="text-decoration: none">
-                        <v-card  variant="flat" color="third" class="b-1 card-size">
-                            <v-card-item class="p-5 text-left">
-                                <div  class="d-flex justify-content-center b-1 mt-2 mb-2 bg-white img-container">
-                                    <v-img :src="event.image" contain></v-img>
-                                </div>
-                                <v-card-title class="font-weight-black " style="font-size: 1.1rem;">{{ event.title }}
-                                </v-card-title>
-                                <v-card-subtitle style="width: 200px;" class="font-weight-black" >{{ event.organizer }}</v-card-subtitle>
-                                <v-chip density="compact" class="mt-2 me-1"v-for="item in event.category" :key="item">{{ item }}</v-chip>
-                                <!-- <v-chip density="compact" class="mt-2 me-1">{{ category }}</v-chip> -->
-                            </v-card-item>
-                        </v-card>
-                    </router-link>  
-                      <!-- <Card class="cursor-pointer" v-bind="event"></Card> -->
-                    </v-col>
-                  </v-row>
-                </div>
-            </div>
-            <!-- 上下頁 -->
-            <div class="text-center my-5">
-                <v-pagination
-                v-model="page"
-                :length="pages"
-                @update:model-value="loadEvents"
-                rounded="circle"
-                ></v-pagination>
-            </div>
-        <!-- </v-container> -->
+        </v-card>
+      </v-dialog>
 
+
+<!-- 搜尋欄 -->
+<!-- 麵包屑 - 顯示目前頁面位置 -->
+<v-container>
+  <v-breadcrumbs :items="items">
+    <template v-slot:divider>
+      <v-icon icon="mdi-chevron-right"></v-icon>
+    </template>
+  </v-breadcrumbs>
+</v-container>
+  <v-responsive max-width="700px" class="mx-auto">
+    <v-text-field
+    variant="outlined"
+    label="搜尋"
+    prepend-inner-icon="mdi-magnify"
+    hide-details
+    single-line
+    density="comfortable"
+    clearable
+    class="bg-white mx-5 mt-5 my-5"
+    v-model="searchQuery"
+    >
+    </v-text-field>
+  </v-responsive>
+  <div class="text-center">
+    <v-responsive max-width="900" class="mx-auto">
+          <v-sheet
+          class="w-100 mx-auto d-inline-block"
+          >
+              <v-slide-group
+                  show-arrows
+                  multiple
+                  mobile-breakpoint="xxl"
+              >
+                  <v-slide-group-item
+                  v-for="category in categories"
+                  :key="category.name"
+                  v-slot="{ isSelected, toggle }"
+                  >
+                  <v-chip
+                  :style="{
+                      backgroundColor: isSelected ? '#616161' : '#EEEEEE',
+                      color: isSelected ? 'white' : 'black'
+                  }"
+                  
+                      class="ma-2"
+                      @click="() => handleClick(category.name, toggle)"
+                  >
+                      {{ category.name }}
+                      
+                  </v-chip>
+                  </v-slide-group-item>
+              </v-slide-group>
+          </v-sheet>
+    </v-responsive>
+    <div class="mx-auto" style="width:100%;">
+      <!-- <v-row class="my-3 d-flex w-lg-75 w-md-100 mx-auto px-sm-5" > -->
+      <v-row class="my-3 d-flex " >
+        <v-col cols="12" sm="6" md="4" lg="3" v-for="event in filteredEvents" :key="event._id" class="mx-0">
+          <router-link :to="'/event/'+ event._id" style="text-decoration: none">
+            <v-card  variant="flat" color="third" class="b-1 card-size">
+                <v-card-item class="p-5 text-left">
+                    <div  class="d-flex justify-content-center b-1 mt-2 mb-2 bg-white img-container">
+                        <v-img :src="event.image" contain></v-img>
+                    </div>
+                    <v-card-title class="font-weight-black " style="font-size: 1.1rem;">{{ event.title }}
+                    </v-card-title>
+                    <v-card-subtitle style="width: 200px;" class="font-weight-black" >{{ event.organizer }}</v-card-subtitle>
+                    <v-chip density="compact" class="mt-2 me-1"v-for="item in event.category" :key="item">{{ item }}</v-chip>
+                    <!-- <v-chip density="compact" class="mt-2 me-1">{{ category }}</v-chip> -->
+                </v-card-item>
+            </v-card>
+        </router-link>  
+          <!-- <Card class="cursor-pointer" v-bind="event"></Card> -->
+        </v-col>
+      </v-row>
+    </div>
+  </div>
+  <!-- 上下頁 -->
+  <div class="text-center my-5">
+    <v-pagination
+    v-model="page"
+    :length="pages"
+    @update:model-value="loadEvents"
+    rounded="circle"
+    ></v-pagination>
+  </div>
 </template>
 
 <script setup>
@@ -285,7 +280,6 @@ const itemsS_PER_PAGE = 12 // 一頁12個
 
 
 
-// const model = ref(null);
 const fileAgent = ref(null)
 const dialog = ref(false)
 
@@ -513,6 +507,12 @@ loadEvents();
     font-size: 18px;
     font-weight: bold;
 }
+.dialog-container{
+  padding:10px;
+}
+.dialog-col{
+  padding: 0;
+}
 @media (min-width: 600px) {
   .v-row{
     padding: 0px 8% 0px 8%;
@@ -520,7 +520,7 @@ loadEvents();
   .form-label{
     font-size: 20px;
     font-weight: bold;
-}
+  }
   #create{
     z-index: 5;
     width: 60px;
@@ -538,10 +538,6 @@ loadEvents();
     max-width: 350px;
     height:380px;
   }
-  .form-label{
-    font-size: 20px;
-    font-weight: bold;
-}
 }
 
 @media (min-width: 600px) and (max-width: 750px) {

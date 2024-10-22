@@ -47,8 +47,9 @@
                     <v-row>
                         <!-- 物資名稱 -->
                         <v-col cols="4" sm="3"class="my-auto text-left ps-6">
-                        <label class="form-label">物資名稱</label>
-                        </v-col>
+                        <label v-if="$vuetify.display.xs" class="form-label">物資名</label>
+                        <label v-else class="form-label">物資名稱</label>
+                    </v-col>
                         <v-col cols="8" sm="9">
                             <inputText
                             v-model="name.value.value"
@@ -58,7 +59,7 @@
                         </v-col>
                         <!-- 需求量 -->
                         <v-col cols="4" sm="3" class="my-auto text-left ps-6">
-                        <label class="form-label">{{numberTitle}}</label>
+                            <label class="form-label">{{numberTitle}}</label>
                         </v-col>
                         <v-col cols="8" sm="9">
                             <inputText
@@ -71,7 +72,8 @@
                         </v-col>
                         <!-- 物資類別 -->
                         <v-col cols="4" sm="3" class="my-auto text-left ps-6">
-                        <label class="form-label">物資類別</label>
+                        <label v-if="$vuetify.display.xs" class="form-label">類別</label>
+                        <label v-else class="form-label">物資類別</label>
                         </v-col>
                         <v-col cols="8" sm="9">
                             <v-select
@@ -87,7 +89,8 @@
                         </v-col>
                         <!-- 需求介紹 -->
                         <v-col cols="4" sm="3" class="my-auto text-left ps-6">
-                            <label class="form-label" >{{descriptionTitle}}</label>
+                            <label v-if="$vuetify.display.xs" class="form-label">介紹</label>
+                            <label v-else class="form-label" >{{descriptionTitle}}</label>
                         </v-col>
                         <v-col cols="8" sm="9">
                             <inputText
@@ -98,7 +101,8 @@
                         </v-col>
                         <!-- 單位名稱 -->
                         <v-col cols="4" sm="3" class="my-auto text-left ps-6">
-                        <label class="form-label">單位名稱</label>
+                            <label v-if="$vuetify.display.xs" class="form-label">單位名</label>
+                            <label v-else class="form-label">單位名稱</label>
                         </v-col>
                         <v-col cols="8" sm="9">
                             <inputText
@@ -164,7 +168,8 @@ const categories = ['食品', '服飾配件', '日用品', '家具', '輔具', '
 
 const dialog = ref(false)
 const openDialog = (item) => {
-dialog.value = true
+  resetForm()
+  dialog.value = true
 }
 
 const closeDialog = () => {
