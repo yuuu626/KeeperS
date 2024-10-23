@@ -1,7 +1,28 @@
 <template>
+
    <!-- 側邊欄 -->
-  <v-navigation-drawer  class="b-1 text-center" width="250">
-    <v-tabs
+   <div v-if="$vuetify.display.xs || $vuetify.display.sm " class="horizontal-drawer">
+        <v-tabs
+          v-model="tab"
+          color="teal-darken-4"
+          direction="horizontal"
+          show-arrows
+        >
+          <v-tab prepend-icon="mdi-account" text="基本資料" value="option-1"></v-tab>
+          <v-tab prepend-icon="mdi-lock" text="地標管理" value="option-2"></v-tab>
+          <v-tab prepend-icon="mdi-access-point" text="貼文管理" value="option-3"></v-tab>
+          <v-tab prepend-icon="mdi-book-cog" text="活動收藏" value="option-4"></v-tab>
+          <v-tab prepend-icon="mdi-package-variant-closed-check" text="物資管理" value="option-5"></v-tab>
+        </v-tabs>
+      </div>
+   <v-navigation-drawer 
+      class="b-1 text-center bg-primary" 
+      :width="$vuetify.display.xs ? '100%' : '250'" 
+      permanent
+      v-else
+    >
+    <div>
+      <v-tabs
         v-model="tab"
         color="teal-darken-4"
         direction="vertical"
@@ -13,15 +34,29 @@
         <v-tab prepend-icon="mdi-book-cog" text="活動收藏" value="option-4" height="100" class="text-body-1 ms-1"></v-tab>
         <v-tab prepend-icon="mdi-package-variant-closed-check" text="物資管理" value="option-5" height="100" class="text-body-1 ms-1"></v-tab>
       </v-tabs>
+    </div>
   </v-navigation-drawer>
+  <!-- <v-navigation-drawer class="b-1 text-center bg-primary" :width="$vuetify.display.xs ? '45' : '250'"  permanent >
+    <v-tabs
+      v-model="tab"
+      color="teal-darken-4"
+      direction="vertical"
+      show-arrows
+    >
+      <v-tab prepend-icon="mdi-account" text="基本資料" value="option-1" height="100" class="text-body-1 ms-1"></v-tab>
+      <v-tab prepend-icon="mdi-lock" text="地標管理" value="option-2" height="100" class="text-body-1 ms-1"></v-tab>
+      <v-tab prepend-icon="mdi-access-point" text="貼文管理" value="option-3" height="100" class="text-body-1 ms-1"></v-tab>
+      <v-tab prepend-icon="mdi-book-cog" text="活動收藏" value="option-4" height="100" class="text-body-1 ms-1"></v-tab>
+      <v-tab prepend-icon="mdi-package-variant-closed-check" text="物資管理" value="option-5" height="100" class="text-body-1 ms-1"></v-tab>
+    </v-tabs>
+  </v-navigation-drawer> -->
   
   <v-card class="h-100">
-    <div class="d-flex flex-row">
+    <div class="d-flex flex-row h-100">
       <v-container>
-        <v-tabs-window v-model="tab" class="my-10">
+        <v-tabs-window v-model="tab" class="mt-10">
 <!-- 01 基本資料管理 -->
           <v-tabs-window-item value="option-1">
-
             <AccountTable/>
           </v-tabs-window-item>
 
@@ -299,6 +334,10 @@ onMounted(() => {
   bottom: 10%;
   right: 3%;
 }
+.v-container{
+  margin:0 auto;
+}
+
 </style>
   
 
