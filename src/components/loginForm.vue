@@ -3,7 +3,7 @@
     <v-form @submit.prevent="submit" :disabled="isSubmitting">
       <!-- Dialog 的內容 -->
       <v-card class=" px-6 bg-grey-lighten-3 b-1 pt-5 rounded-t-0" >
-        <v-card-text >
+        <v-card-text class="pb-0 pb-sm-4">
           <!-- <template> -->
             <v-text-field 
               label="公務信箱"
@@ -11,6 +11,7 @@
               variant="outlined"
               v-model="email.value.value"
               :error-messages="email.errorMessage.value"
+              :density="$vuetify.display.xs ? 'comfortable' : 'default'"
             ></v-text-field>
             <v-text-field
               label="密碼"
@@ -19,6 +20,7 @@
               minlength="6"
               v-model="password.value.value"
               :error-messages="password.errorMessage.value"
+              :density="$vuetify.display.xs ? 'comfortable' : 'default'"
               counter
             ></v-text-field>
           <!-- </template> -->

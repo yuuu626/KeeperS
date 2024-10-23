@@ -5,20 +5,20 @@
       <div class="flex-grow-1">
         <!-- 菜單部分 -->
         <template v-for="menu in menus" :key="menu.title">
-          <v-menu open-on-hover transition="slide-y-transition" location="end" >
+          <v-menu open-on-hover transition="slide-y-transition" location="end">
             <template v-slot:activator="{ props }">
-              <v-list-item v-if="menu.show" v-bind="props" :ripple="false" :prepend-icon="menu.icon" class="font-weight-black mt-4" style="color: #474747;">
+              <v-list-item v-if="menu.show" v-bind="props" :ripple="false" :prepend-icon="menu.icon" class="font-weight-black py-5 cursor-pointer" style="color: #474747;">
                 {{ menu.title }}
                 <v-icon>mdi-menu-down</v-icon>
               </v-list-item>
             </template>
-            <v-list>
+            <v-list class="bg-teal-lighten-5 pa-0">
               <template v-for="(item, i) in menu.items" :key="i">
                 <v-list-item
                   v-if="item.show"
                   :to="item.to"
                   link
-
+                  class="bg-teal-lighten-5 ma-2"
                   >
                   <v-list-item-title>{{ item.text }}</v-list-item-title>
                 </v-list-item>
@@ -28,13 +28,13 @@
         </template>
         
         <template v-for="item in navItems" :key="item.to">
-          <v-list>
+          <v-list class="py-0">
             <v-list-item 
               v-if="item.show"
               :prepend-icon="item.icon"
               :to="item.to"
               :active="false"
-              class="mx-1 font-weight-black pe-1"
+              class="font-weight-black px-4 py-5"
               style="color: #474747;"
               @click="handleItemClick(item)"
             >{{ item.text }}</v-list-item>
@@ -76,14 +76,10 @@
   <!-- 導覽列 -->
   <v-app-bar color="primary" scroll-behavior="elevate" class="b-1">
     <v-container class="d-flex align-center">
-
-      
-        <v-btn to="/" :active="false" class="p-1">
-          <v-img src="../assets/logo.png" width="30" class="d-inline-block" style="vertical-align: cneter;" contain></v-img>
-          <span style="text-transform:capitalize; color: #474747;" class=" text-h6 pl-1">KeeperS</span> 
-        </v-btn>
-        
-      
+      <v-btn to="/" :active="false">
+        <v-img src="../assets/logo.png" width="30" class="d-inline-block" style="vertical-align: cneter;" contain></v-img>
+        <span style="text-transform:capitalize; color: #474747;" class=" text-h6 pl-1">KeeperS</span> 
+      </v-btn>
       <v-spacer></v-spacer>
       <template v-if="mobile">
         <v-app-bar-nav-icon @click="drawer=true"></v-app-bar-nav-icon>
@@ -124,7 +120,7 @@
         @click="handleItemClick(item)"
         >{{ item.text }}</v-btn>
       </template>
-      <v-btn class="ms-8 bg-accent b-1  font-weight-black" style="color: #474747;" elevation="2" prepend-icon="mdi-account-arrow-right" v-if="user.isLogin" @click="logout">登出</v-btn>
+      <v-btn class="ms-8 bg-accent b-1 font-weight-black" style="color: #474747;" elevation="2" prepend-icon="mdi-account-arrow-right" v-if="user.isLogin" @click="logout">登出</v-btn>
       </template>
     </v-container>
   </v-app-bar>
