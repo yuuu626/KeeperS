@@ -1,5 +1,5 @@
 <template>
-  <div class="b-1 w-75 mx-auto">
+  <div class="b-1 mx-auto share-container">
     <!-- 我的分享管理 -->
     <h2 class="bg-accent text-center mx-auto bb-1 py-1">我要分享</h2>
             <v-data-table-server
@@ -7,7 +7,7 @@
                 v-model:sort-by="tableSortBy"
                 v-model:page="tablePage"
                 :items="tableItems"
-                :headers="tableHeaders"
+                :headers="$vuetify.display.xs ||  $vuetify.display.sm? SmtableHeaders:$vuetify.display.md?MdtableHeaders : tableHeaders"
                 :loading="tableLoading"
                 :items-length="tableItemsLength"
                 :search="tableSearch"
@@ -15,7 +15,7 @@
                 @update:sort-by="tableLoadItems(false)"
                 @update:page="tableLoadItems(false)"
                 hover
-                class="mb-15 px-8"
+                class="mx-auto mb-15 px-2 px-md-8 text-body-1 rounded-sm"
               >
               <!-- 搜尋欄位 -->
               <template #top>
@@ -29,19 +29,40 @@
               </template>
               <template #[`item.image`]="{ item }">
               <router-link :to="'/material/share/'+ item._id" style="text-decoration: none">
-                <v-img :src="item.image" width="80px" max-height="100px" ></v-img>
+                <v-img :src="item.image" class="table-image my-2" ></v-img>
               </router-link>
               </template>
-              <template #[`item.description`]="{ item }">
-                <td style="width: 250px;white-space: pre-line;" class="py-2">{{ item.description }}</td>
-              </template>
+            <template #[`item.name`]="{item }">
+                <td class="table-name text-left">{{ item.name }}</td>
+            </template>
+            <template #[`item.quantity`]="{item }">
+                <td class="table-quantity text-center">{{ item.quantity }}</td>
+            </template>
+            <template #[`item.category`]="{item }">
+                <td class="table-category text-center">{{ item.category }}</td>
+            </template>
+            <template #[`item.description`]="{ item }">
+              <td class="py-2 table-description">{{ item.description }}</td>
+            </template>
               <template #[`item.action`]="{ item }">
-                <td style="width: 80px;">{{ item.action }}
+                <td>{{ item.action }}
                   <v-btn icon="mdi-pencil" variant="text" color="blue-grey-darken-1" @click="openDialog(item)"></v-btn>
-                  <v-btn icon="mdi-delete" variant="text" color="red-darken-4" @click="deleteItem(item)"></v-btn>
+                  <v-btn icon="mdi-delete" variant="text" color="red-darken-4" @click="confirmDelete(item)"></v-btn>
                 </td>
               </template>
             </v-data-table-server>
+             <!-- 確認刪除對話框 -->
+            <v-dialog v-model="deleteDialog" max-width="400">
+              <v-card>
+                <v-card-title class="headline">確認刪除</v-card-title>
+                <v-card-text>你確定要刪除這個項目嗎？</v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="grey" text @click="cancelDelete">取消</v-btn>
+                  <v-btn color="red" text @click="executeDelete">刪除</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </div>
             <v-dialog max-width="600" v-model="dialog.open">
                 <v-card>
@@ -66,69 +87,73 @@
                                 </v-row>
                                 <v-row>
                                     <!-- 物資名稱 -->
-                                    <v-col cols="12" md="3" class="my-auto text-left ps-6">
+                                    <v-col cols="4" md="3" class="my-auto text-left ps-6">
                                     <label class="form-label">物資名稱</label>
                                     </v-col>
-                                    <v-col cols="12" md="9">
+                                    <v-col cols="8" md="9">
                                         <inputText
                                         v-model="name.value.value"
                                         :error-messages="name.errorMessage.value"
+                                        :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                                         />
                                     </v-col>
                                     <!-- 需求量 -->
-                                    <v-col cols="12" md="3" class="my-auto text-left ps-6">
+                                    <v-col cols="4" md="3" class="my-auto text-left ps-6">
                                     <label class="form-label">{{numberTitle}}</label>
                                     </v-col>
-                                    <v-col cols="12" md="9">
+                                    <v-col cols="8" md="9">
                                         <inputText
                                         v-model=" quantity.value.value"
                                         :error-messages=" quantity.errorMessage.value"
+                                        :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                                         />
                                     </v-col>
-                                     <!-- 物資類別 -->
-                                     <v-col cols="12" md="3" class="my-auto text-left ps-6">
+                                    <!-- 物資類別 -->
+                                    <v-col cols="4" md="3" class="my-auto text-left ps-6">
                                     <label class="form-label">物資類別</label>
                                     </v-col>
-                                    <v-col cols="12" md="9">
+                                    <v-col cols="8" md="9">
                                         <v-select
                                             v-model=" category.value.value"
                                             :error-messages=" category.errorMessage.value"
+                                        :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                                             label="選擇" 
                                             variant="outlined" 
-                                            density="comfortable" 
                                             dense
                                             :items="categories"
                                             hide-details
                                         ></v-select>
                                     </v-col>
                                     <!-- 需求介紹 -->
-                                    <v-col cols="12" md="3" class="my-auto text-left ps-6">
+                                    <v-col cols="4" md="3" class="my-auto text-left ps-6">
                                         <label class="form-label" >{{descriptionTitle}}</label>
                                     </v-col>
-                                    <v-col cols="12" md="9">
+                                    <v-col cols="8" md="9">
                                         <inputText
                                         v-model=" description.value.value"
                                         :error-messages=" description.errorMessage.value"
+                                        :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                                         />
                                     </v-col>
                                     <!-- 單位名稱 -->
-                                    <v-col cols="12" md="3" class="my-auto text-left ps-6">
+                                    <v-col cols="4" md="3" class="my-auto text-left ps-6">
                                     <label class="form-label">單位名稱</label>
                                     </v-col>
-                                    <v-col cols="12" md="9">
+                                    <v-col cols="8" md="9">
                                         <inputText
                                         v-model="organizer.value.value"
                                         :error-messages="organizer.errorMessage.value"
+                                        :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
                                         />
                                     </v-col>
                                 </v-row>
                                 <v-card-actions>
-                                    <div class="mx-auto">
-                                    <v-btn variant="text"class="rounded-xl b-1" density="comfortable" type="submit" :loading="isSubmitting">送出</v-btn>
+                                  <div class="mx-auto">
+                                    <v-btn variant="text" class="rounded-xl b-1 bg-accent" density="comfortable" type="submit" :loading="isSubmitting">送出</v-btn>
                                     <v-btn
                                     text="取消"
                                     variant="text"
-                                    class="rounded-xl b-1"
+                                    class="rounded-xl b-1 bg-info"
                                     density="comfortable"
                                     @click="closeDialog()"
                                     ></v-btn>
@@ -191,9 +216,23 @@ const tableHeaders = [
   { title: '數量', align: 'center', sortable: false, key: 'quantity' },
   { title: '分類', align: 'center', sortable: true, key: 'category' },
   { title: '概況', align: 'center', sortable: false, key: 'description' },
-  { title: '單位', align: 'center', sortable: false, key: 'organizer' },
   { title: '操作', align: 'center', sortable: false, key: 'action' }
 ]
+
+const SmtableHeaders = [
+  { title: '名稱', align: 'center', sortable: false, key: 'name' },
+  { title: '分類', align: 'center', sortable: true, key: 'category' },
+  { title: '操作', align: 'center', sortable: false, key: 'action' }
+]
+
+const MdtableHeaders = [
+{ title: '圖片', align: 'center', sortable: false, key: 'image' },
+  { title: '名稱', align: 'center', sortable: false, key: 'name' },
+  { title: '數量', align: 'center', sortable: false, key: 'quantity' },
+  { title: '分類', align: 'center', sortable: true, key: 'category' },
+  { title: '操作', align: 'center', sortable: false, key: 'action' }
+]
+
 const tableLoading = ref(true)
 const tableItemsLength = ref(0)
 const tableSearch = ref('')
@@ -336,10 +375,29 @@ const submit = handleSubmit(async (values) => {
   }
 })
 
-
+const deleteDialog = ref(false);
+const itemToDelete = ref(null);
 watch(tableSearch, () => {
   tableLoadItems(true); // 當搜尋查詢變化時重新過濾項目
 });
+// 確認刪除
+const confirmDelete = (item) => {
+  itemToDelete.value = item; // 設置要刪除的項目
+  deleteDialog.value = true; // 打開對話框
+};
+
+const cancelDelete = () => {
+  deleteDialog.value = false; // 關閉對話框
+  itemToDelete.value = null; // 重置
+};
+
+const executeDelete = async () => {
+  if (itemToDelete.value) {
+    await deleteItem(itemToDelete.value); // 調用刪除函數
+    deleteDialog.value = false; // 關閉對話框
+    itemToDelete.value = null; // 重置
+  }
+};
 
 const deleteItem = async (item) => {
   // console.log(item._id)
@@ -365,3 +423,88 @@ const deleteItem = async (item) => {
 
 
 </script>
+<style scoped>
+.share-container{
+  width: 100%;
+}
+.table-name{
+  max-width: 100px;
+  font-size: 15px;
+}
+.table-quantity{
+  min-width: 60px;
+  font-size: 15px;
+}
+.table-category{
+  min-width: 80px;
+}
+.table-action{
+  min-width:40px;
+}
+@media(min-width:600px){
+  .share-container{
+    width: 95%;
+  }
+
+  .table-name{
+    min-width: 150px;
+    font-size: 16px;
+  }
+  .table-quantity{
+    min-width: 50px;
+    font-size: 16px;
+  }
+  .table-action{
+    min-width: 20px;
+  }
+}
+@media(min-width:960px){
+  .share-container{
+    width: 90%;
+  }
+  .table-image{
+    min-width: 100px;
+    max-width: 120px ;
+    min-height: 115px;
+    max-height: 115px;
+  }
+  .table-name{
+    width: 30%;
+    font-size: 16px;
+  }
+  .table-quantity{
+    width: 30%;
+    font-size: 16px;
+  }
+  .table-category{
+    min-width: 20px;
+  }
+  .table-action{
+    max-width: 50px;
+  }
+  .table-description{
+    width: 350px;
+    white-space: pre-line;
+  }
+}
+@media(min-width:1280px){
+  .share-container{
+    width: 87%;
+  }
+ 
+
+  .table-description{
+    white-space: pre-line;
+  }
+}
+@media(min-width:1500px){
+  .share-container{
+    width: 85%;
+  }
+}
+@media(min-width:1920px){
+  .share-container{
+    width: 70%;
+  }
+}
+</style>
