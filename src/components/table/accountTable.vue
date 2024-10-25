@@ -31,7 +31,7 @@
           <v-container>
             <v-row class="text-left justify-center">
               <v-col cols="0" md="1" lg="2"></v-col>
-              <v-col cols="4" md="3" lg="3" class=" info-text my-auto pl-8 pl-sm-13 pl-md-0 pl-lg-12">服務單位</v-col>
+              <v-col cols="4" md="3" lg="3" class=" info-text my-auto pl-5 pl-sm-13 pl-md-0 pl-lg-12">服務單位</v-col>
               <template v-for="item in files" :key="item.id" >
                 <v-col cols="5" md="4" lg="4" class="px-0 my-auto">
                   <p v-if="!item.isEditing" style="color: #616161;"  class="info-text pl-4 pl-md-0">
@@ -67,7 +67,7 @@
             
             <v-row class="text-left justify-center ">
               <v-col cols="0" md="1" lg="2"></v-col>
-              <v-col cols="4" md="3" lg="3" class="info-text my-auto pl-8 pl-sm-13 pl-md-0 pl-lg-12">電子信箱</v-col>
+              <v-col cols="4" md="3" lg="3" class="info-text my-auto pl-5 pl-sm-13 pl-md-0 pl-lg-12">電子信箱</v-col>
               <template v-for="item in files" :key="item.id">
                 <v-col cols="5" md="4" lg="4" class="px-0 my-auto">
                   <p style="color: #616161;" class="info-text pl-4 pl-md-0">
@@ -88,7 +88,7 @@
             </v-row>
             <v-row class="text-left justify-center">
               <v-col cols="0" md="1" lg="2"></v-col>
-              <v-col cols="4" md="3" lg="3" class="info-text my-auto pl-8 pl-sm-13 pl-md-0 pl-lg-12">密碼</v-col>
+              <v-col cols="4" md="3" lg="3" class="info-text my-auto pl-5 pl-sm-13 pl-md-0 pl-lg-12">密碼</v-col>
               <template v-for="item in files" :key="item.id">
                 <v-col cols="5" md="4" lg="4" class="px-0 my-auto">
                   <!-- 非編輯狀態時顯示原用戶名 -->

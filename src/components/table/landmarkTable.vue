@@ -1,285 +1,287 @@
 <template>
-    <div class="b-1 w-75 mx-auto" >
+    <div class="b-1 mx-auto landmark-container" >
     <h2 class="bg-accent text-center mx-auto bb-1 py-1">地標管理</h2>
-            <v-data-table-server
-                v-model:items-per-page="tableItemsPerPage"
-                v-model:sort-by="tableSortBy"
-                v-model:page="tablePage"
-                :items="tableItems"
-                :headers="tableHeaders"
-                :loading="tableLoading"
-                :items-length="tableItemsLength"
-                :search="tableSearch"
-                @update:items-per-page="tableLoadItems(false)"
-                @update:sort-by="tableLoadItems(false)"
-                @update:page="tableLoadItems(false)"
-                hover
-                class="mx-auto mb-15 px-8 text-body-1  rounded-lg"
-              >
-              <!-- 搜尋欄位 -->
-                <template #top>
-                <search 
-                    class="my-5"
-                    v-model="tableSearch"
-                    @click-append="tableLoadItems(true)"
-                    @keydown.enter="tableLoadItems(true)"
-                    max-width="100%"
-                ></search>
-                </template>
-                <template #[`item.name`]="{item }">
-                    <td style="width: 240px;">{{ item.name }}</td>
-                </template>
-                <template #[`item.tel`]="{item }">
-                    <td style="width:120px;">{{ item.tel }}</td>
-                </template>
-                <template #[`item.address`]="{ item }">
-                <td style="width: 300px;" class="text-left">{{ item.address }}</td>
-                </template>
-                <template #[`item.categories`]="{ item }">
-                    <!-- .join 將陣列轉換為格式化的字串 -->
-                    <td style="width: 200px;" class="text-center">{{ item.categories.join(' , ') }}</td>
-                </template>
-                <template #[`item.description`]="{ item }">
-                <td style="width: 350px;" class="py-2 text-left">{{ item.description }}</td>
-                </template>
-                <template #[`item.action`]="{ item }">
-                <td style="width: 80px;">{{ item.action }}
-                    <v-btn icon="mdi-pencil" variant="text" color="grey-darken-2" @click="openDialog(item)"></v-btn>
-                    <v-btn icon="mdi-delete" variant="text" color="red-darken-4" @click="deleteItem(item)"></v-btn>
-                </td>
-                </template>
-            </v-data-table-server>
-        </div>
+        <v-data-table-server
+        v-model:items-per-page="tableItemsPerPage"
+        v-model:sort-by="tableSortBy"
+        v-model:page="tablePage"
+        :items="tableItems"
+        :headers="$vuetify.display.xs ||  $vuetify.display.sm? SmtableHeaders:$vuetify.display.md?dtableHeaders : tableHeaders"
+        :loading="tableLoading"
+        :items-length="tableItemsLength"
+        :search="tableSearch"
+        @update:items-per-page="tableLoadItems(false)"
+        @update:sort-by="tableLoadItems(false)"
+        @update:page="tableLoadItems(false)"
+        hover
+        class="mx-auto mb-15 px-2 px-md-8 text-body-1 rounded-sm"
+        >
+            <!-- 搜尋欄位 -->
+            <template #top>
+            <search 
+                class="my-5"
+                v-model="tableSearch"
+                @click-append="tableLoadItems(true)"
+                @keydown.enter="tableLoadItems(true)"
+                max-width="100%"
+            ></search>
+            </template>
+            <template #[`item.name`]="{item }">
+                <td class="table-name text-left">{{ item.name }}</td>
+            </template>
+            <template #[`item.tel`]="{item }">
+                <td class="table-tel">{{ item.tel }}</td>
+            </template>
+            <template #[`item.address`]="{ item }">
+              <td class="table-address text-left">{{ item.address }}</td>
+            </template>
+            <template #[`item.categories`]="{ item }">
+              <!-- .join 將陣列轉換為格式化的字串 -->
+              <td class="table-categories text-center">{{ item.categories.join(' , ') }}</td>
+            </template>
+            <template #[`item.description`]="{ item }">
+              <td class="table-description py-2 text-left">{{ item.description }}</td>
+            </template>
+            <template #[`item.action`]="{ item }">
+            <td class="table-action py-2 text-center">{{ item.action }}
+                <v-btn icon="mdi-pencil" variant="text" color="grey-darken-2" @click="openDialog(item)"></v-btn>
+                <v-btn icon="mdi-delete" variant="text" color="red-darken-4" @click="deleteItem(item)"></v-btn>
+            </td>
+            </template>
+        </v-data-table-server>
+    </div>
            
-            <v-dialog max-width="700" v-model="dialog.open">
-                <v-card>
-                    <v-toolbar color="secondary" prominent class=" bb-1" height="55">
-                        <v-toolbar-title class="mt-3 text-center">
-                            修改地標
-                        </v-toolbar-title>
-                    </v-toolbar>
-                <div class="px-6 my-2">
-            <v-form @submit.prevent="submit" :disabled="isSubmitting">
-                <v-row class="my-1">
-                    <v-col cols="12" md="3" class="my-auto text-center ps-6">
-                        <label class="form-label">服務地址</label>
-                    </v-col>
-                    <v-col cols="12" md="9">
-                        <Search 
-                        v-model="address"
-                        :error-messages="addressError "
-                        label="輸入資源地址"
-                        max-width="1000px"
-                        ></Search>
-                    </v-col>
-                    <!-- 物資名稱 -->
-                    <v-col cols="12" md="3" class="my-auto text-center ps-6">
-                    <label class="form-label">服務名稱</label>
-                    </v-col>
-                    <v-col cols="12" md="9">
-                        <inputText 
-                        v-model="name.value.value"
-                        :error-messages="name.errorMessage.value"
-                        />
-                    </v-col>
-                    <!-- 需求量 -->
-                    <v-col cols="12" md="3" class="my-auto text-center ps-6">
-                    <label class="form-label">服務電話</label>
-                    </v-col>
-                    <v-col cols="12" md="9">
-                        <inputText 
-                        v-model="tel.value.value"
-                        :error-messages="tel.errorMessage.value"
-                        />
-                    </v-col>
-                        <!-- 物資類別 -->
-                        <v-col cols="12" md="3" class="mt-2 text-center ps-6">
-                    <label class="form-label">服務項目</label>
-                    </v-col>
-                    <v-col cols="12" md="9">
-                        <v-expansion-panels variant="accordion">
-                            <v-expansion-panel title="選擇類別">
-                                <v-expansion-panel-text>
-                                    <v-container>
-                                        <v-row>
-                                            <v-col>
-                                                <p>服務對象</p>
-                                                <div>
-                                                    <v-chip-group
-                                                        v-model="category1.value.value"
-                                                        :error-messages="category1.errorMessage.value"
-                                                        column
-                                                        multiple
-                                                    >
-                                                        <v-chip
-                                                        v-for="item in client"
-                                                        :text="item"
-                                                        :value="item"
-                                                        filter
-                                                        density="compact"
-                                                        ></v-chip>
-                                                    </v-chip-group>
-                                                </div>
-                                                <v-divider></v-divider>
-                                            </v-col>
-                                        </v-row>
-                                        
-                                        <v-row>
-                                            <v-col>
-                                                <p>長期照顧</p>
-                                                <div>
-                                                    <v-chip-group
-                                                        v-model="category2.value.value"
-                                                        :error-messages="category2.errorMessage.value"
-                                                        column
-                                                        multiple
-                                                    >
-                                                        <v-chip
-                                                        v-for="item in care"
-                                                        :text="item"
-                                                        :value="item"
-                                                        filter
-                                                        density="compact"
-                                                        ></v-chip>
-                                                    </v-chip-group>
-                                                </div>
-                                                <v-divider></v-divider>
-                                            </v-col>
-                                        </v-row>
-                                        <v-row>
-                                            <v-col>
-                                                <p>身心障礙</p>
-                                                <div>
-                                                    <v-chip-group
-                                                        v-model="category3.value.value"
-                                                        :error-messages="category3.errorMessage.value"
-                                                        column
-                                                        multiple
-                                                    >
-                                                        <v-chip
-                                                        v-for="item in disability"
-                                                        :text="item"
-                                                        :value="item"
-                                                        filter
-                                                        density="compact"
-                                                        ></v-chip>
-                                                    </v-chip-group>
-                                                </div>
-                                                <v-divider></v-divider>
-                                            </v-col>
-                                        </v-row>
-                                        <v-row>
-                                            <v-col>
-                                                <p>兒童及少年</p>
-                                                <div>
-                                                    <v-chip-group
-                                                        v-model="category4.value.value"
-                                                        :error-messages="category4.errorMessage.value"
-                                                        column
-                                                        multiple
-                                                    >
-                                                        <v-chip
-                                                        v-for="item in child"
-                                                        :text="item"
-                                                        :value="item"
-                                                        filter
-                                                        density="compact"
-                                                        ></v-chip>
-                                                    </v-chip-group>
-                                                </div>
-                                                <v-divider></v-divider>
-                                            </v-col>
-                                        </v-row>
-                                        <v-row>
-                                            <v-col>
-                                                <p>社會救助</p>
-                                                <div>
-                                                    <v-chip-group
-                                                        v-model="category5.value.value"
-                                                        :error-messages="category5.errorMessage.value"
-                                                        column
-                                                        multiple
-                                                    >
-                                                        <v-chip
-                                                        v-for="item in assistance"
-                                                        :text="item"
-                                                        :value="item"
-                                                        filter
-                                                        density="compact"
-                                                        ></v-chip>
-                                                    </v-chip-group>
-                                                </div>
-                                                <v-divider></v-divider>
-                                            </v-col>
-                                        </v-row>
-                                        <v-row>
-                                            <v-col>
-                                                <p>婦女</p>
-                                                <div>
-                                                    <v-chip-group
-                                                        v-model="category7.value.value"
-                                                        :error-messages="category7.errorMessage.value"
-                                                        column
-                                                        multiple
-                                                    >
-                                                        <v-chip
-                                                        v-for="item in women"
-                                                        :text="item"
-                                                        :value="item"
-                                                        filter
-                                                        density="compact"
-                                                        ></v-chip>
-                                                    </v-chip-group>
-                                                </div>
-                                                <v-divider></v-divider>
-                                            </v-col>
-                                        </v-row>
-                                        <v-row>
-                                            <v-col>
-                                                <p>其他</p>
-                                                <v-chip-group
-                                                    v-model="category6.value.value"
-                                                    :error-messages="category6.errorMessage.value"
-                                                    column
-                                                    multiple
-                                                    >
-                                                    <v-chip
-                                                    value="其他"
-                                                    text="其他"
-                                                    filter
-                                                    density="compact"
-                                                    ></v-chip>
-                                                </v-chip-group>
-                                            </v-col>
-                                        </v-row>
-                                    </v-container>
-                                </v-expansion-panel-text>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-col>
-                    <!-- 需求介紹 -->
-                    <v-col cols="12" md="3" class="text-center ps-6">
-                        <label class="form-label">服務介紹</label>
-                    </v-col>
-                    <v-col cols="12" md="9">
-                        <v-textarea 
-                        style="white-space: pre-line;"
-                        variant="outlined" clearable
-                        v-model="description.value.value"
-                        :error-messages="description.errorMessage.value"
-                        hide-details
-                        ></v-textarea>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col class="text-center" >
-                        <submitButton text="修改" type="submit" class="b-1 bg-accent mb-8" @click="addMarker"></submitButton>
-                    </v-col>
-                </v-row>
-            </v-form>
-        </div>
-                </v-card>
-            </v-dialog>
+    <v-dialog max-width="700" v-model="dialog.open">
+        <v-card>
+            <v-toolbar color="secondary" prominent class=" bb-1" height="55">
+                <v-toolbar-title class="mt-3 text-center font-weight-bold">
+                    修改地標
+                </v-toolbar-title>
+            </v-toolbar>
+        <div class="px-6 my-2">
+    <v-form @submit.prevent="submit" :disabled="isSubmitting">
+        <v-row class="my-1">
+            <v-col cols="4" md="3" class="my-auto text-center ps-1 ps-sm-6">
+                <label class="form-label">服務地址</label>
+            </v-col>
+            <v-col cols="8" md="9">
+                <Search 
+                v-model="address"
+                :error-messages="addressError "
+                label="輸入資源地址"
+                max-width="1000px"
+                ></Search>
+            </v-col>
+            <!-- 物資名稱 -->
+            <v-col cols="4" md="3" class="my-auto text-center ps-1 ps-sm-6">
+            <label class="form-label">服務名稱</label>
+            </v-col>
+            <v-col cols="8" md="9">
+                <inputText 
+                v-model="name.value.value"
+                :error-messages="name.errorMessage.value"
+                />
+            </v-col>
+            <!-- 需求量 -->
+            <v-col cols="4" md="3" class="my-auto text-center ps-1 ps-sm-6">
+            <label class="form-label">服務電話</label>
+            </v-col>
+            <v-col cols="8" md="9">
+                <inputText 
+                v-model="tel.value.value"
+                :error-messages="tel.errorMessage.value"
+                />
+            </v-col>
+                <!-- 物資類別 -->
+                <v-col cols="4" md="3" class="mt-2 text-center ps-1 ps-sm-6">
+            <label class="form-label">服務項目</label>
+            </v-col>
+            <v-col cols="8" md="9">
+                <v-expansion-panels variant="accordion">
+                    <v-expansion-panel title="選擇類別">
+                        <v-expansion-panel-text>
+                            <v-container>
+                                <v-row>
+                                    <v-col>
+                                        <p>服務對象</p>
+                                        <div>
+                                            <v-chip-group
+                                                v-model="category1.value.value"
+                                                :error-messages="category1.errorMessage.value"
+                                                column
+                                                multiple
+                                            >
+                                                <v-chip
+                                                v-for="item in client"
+                                                :text="item"
+                                                :value="item"
+                                                filter
+                                                density="compact"
+                                                ></v-chip>
+                                            </v-chip-group>
+                                        </div>
+                                        <v-divider></v-divider>
+                                    </v-col>
+                                </v-row>
+                                
+                                <v-row>
+                                    <v-col>
+                                        <p>長期照顧</p>
+                                        <div>
+                                            <v-chip-group
+                                                v-model="category2.value.value"
+                                                :error-messages="category2.errorMessage.value"
+                                                column
+                                                multiple
+                                            >
+                                                <v-chip
+                                                v-for="item in care"
+                                                :text="item"
+                                                :value="item"
+                                                filter
+                                                density="compact"
+                                                ></v-chip>
+                                            </v-chip-group>
+                                        </div>
+                                        <v-divider></v-divider>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        <p>身心障礙</p>
+                                        <div>
+                                            <v-chip-group
+                                                v-model="category3.value.value"
+                                                :error-messages="category3.errorMessage.value"
+                                                column
+                                                multiple
+                                            >
+                                                <v-chip
+                                                v-for="item in disability"
+                                                :text="item"
+                                                :value="item"
+                                                filter
+                                                density="compact"
+                                                ></v-chip>
+                                            </v-chip-group>
+                                        </div>
+                                        <v-divider></v-divider>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        <p>兒童及少年</p>
+                                        <div>
+                                            <v-chip-group
+                                                v-model="category4.value.value"
+                                                :error-messages="category4.errorMessage.value"
+                                                column
+                                                multiple
+                                            >
+                                                <v-chip
+                                                v-for="item in child"
+                                                :text="item"
+                                                :value="item"
+                                                filter
+                                                density="compact"
+                                                ></v-chip>
+                                            </v-chip-group>
+                                        </div>
+                                        <v-divider></v-divider>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        <p>社會救助</p>
+                                        <div>
+                                            <v-chip-group
+                                                v-model="category5.value.value"
+                                                :error-messages="category5.errorMessage.value"
+                                                column
+                                                multiple
+                                            >
+                                                <v-chip
+                                                v-for="item in assistance"
+                                                :text="item"
+                                                :value="item"
+                                                filter
+                                                density="compact"
+                                                ></v-chip>
+                                            </v-chip-group>
+                                        </div>
+                                        <v-divider></v-divider>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        <p>婦女</p>
+                                        <div>
+                                            <v-chip-group
+                                                v-model="category7.value.value"
+                                                :error-messages="category7.errorMessage.value"
+                                                column
+                                                multiple
+                                            >
+                                                <v-chip
+                                                v-for="item in women"
+                                                :text="item"
+                                                :value="item"
+                                                filter
+                                                density="compact"
+                                                ></v-chip>
+                                            </v-chip-group>
+                                        </div>
+                                        <v-divider></v-divider>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        <p>其他</p>
+                                        <v-chip-group
+                                            v-model="category6.value.value"
+                                            :error-messages="category6.errorMessage.value"
+                                            column
+                                            multiple
+                                            >
+                                            <v-chip
+                                            value="其他"
+                                            text="其他"
+                                            filter
+                                            density="compact"
+                                            ></v-chip>
+                                        </v-chip-group>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                        </v-expansion-panel-text>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+            </v-col>
+            <!-- 需求介紹 -->
+            <v-col cols="4" md="3" class="text-center  ps-1 ps-sm-6">
+                <label class="form-label">服務介紹</label>
+            </v-col>
+            <v-col cols="8" md="9">
+                <v-textarea 
+                style="white-space: pre-line;"
+                variant="outlined"
+                v-model="description.value.value"
+                :error-messages="description.errorMessage.value"
+                hide-details
+                :rows="$vuetify.display.xs ? '3' : '4'"
+                :clearable="!$vuetify.display.xs"
+                ></v-textarea>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col class="text-center" >
+                <submitButton text="修改" type="submit" class="b-1 bg-accent mb-8" @click="addMarker"></submitButton>
+            </v-col>
+        </v-row>
+    </v-form>
+</div>
+        </v-card>
+    </v-dialog>
             
 </template>
 <script setup>
@@ -323,6 +325,20 @@ const tableHeaders = [
 { title: '服務介紹', align: 'center', sortable: false, key: 'description' },
 { title: '操作', align: 'center', sortable: false, key: 'action' }
 ]
+
+const SmtableHeaders = [ 
+{ title: '服務名稱', align: 'center', sortable: false, key: 'name' }, 
+{ title: '地址', align: 'center', sortable: true, key: 'address' },
+{ title: '操作', align: 'center', sortable: false, key: 'action' }
+]
+
+const dtableHeaders = [ 
+{ title: '服務名稱', align: 'center', sortable: false, key: 'name' }, 
+{ title: '地址', align: 'center', sortable: true, key: 'address' },
+{ title: '服務項目', align: 'center', sortable: true, key: 'categories' },
+{ title: '操作', align: 'center', sortable: false, key: 'action' }
+]
+
 const tableLoading = ref(true) // 進來頁面時是讀取狀態
 const tableItemsLength = ref(0) // 全部有多少筆資料
 const tableSearch = ref('') // 搜尋的文字
@@ -348,7 +364,7 @@ const tableLoadItems = async (reset) => {
     console.log(data)
     tableItems.value.splice(0, tableItems.value.length, ...data.result.data) // 清空所有資料，再從後端取得新資料
     tableItemsLength.value = data.result.total
-    // console.log(tableItems)
+    console.log(tableItems.value)
     // const category = tableItems.value.map(obj => obj.category);
     // console.log(category)
   } catch (error) {
@@ -375,7 +391,6 @@ const openDialog = (item) => {
     name.value.value = item.name 
     tel.value.value = item.tel
     description.value.value = item.description
-    
 }
 const closeDialog = () => {
   dialog.value.open = false
@@ -476,17 +491,12 @@ try {
     if (data.results && data.results.length > 0) {
     const lat = data.results[0].geometry.location.lat;
     const lng = data.results[0].geometry.location.lng;
- 
+
     latitude.value = lat;
     longitude.value = lng;
 
-    console.log(latitude.value)
-    console.log(data.results)
-    console.log(lat)
-    console.log(lng)
-
     } else {
-    alert('找不到地址~');
+      alert('找不到地址~');
     }
 } catch (error) {
     console.error('新增地標錯誤:', error);
@@ -605,8 +615,79 @@ const deleteItem = async (item) => {
     padding: 0 8px 0 8px ;
 }
 .form-label{
- font-size: 20px;
+ font-size: 18px;
  font-weight: bold;
  color: rgb(80, 80, 80);
+}
+.landmark-container{
+  width: 100%;
+}
+.table-name{
+  width: 40%;
+  /* width: 180px; */
+  font-size: 15px;
+}
+.table-address{
+  width: 40%;
+  /* width: 165px; */
+  font-size: 15px;
+}
+.table-action{
+  width: 20%;
+  /* width:40px; */
+}
+@media(min-width:600px){
+  .form-label{
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .landmark-container{
+    width: 95%;
+  }
+}
+@media(min-width:960px){
+  .landmark-container{
+    width: 90%;
+  }
+  .table-name{
+    width: 30%;
+    font-size: 16px;
+  }
+  .table-address{
+    width: 30%;
+    font-size: 16px;
+  }
+  .table-action{
+    width: 30%;
+  }
+ 
+  .table-categories{
+    width: 10%;
+  }
+
+}
+@media(min-width:1280px){
+  .landmark-container{
+    width: 87%;
+  }
+  .table-categories{
+    width: 10%;
+  }
+
+  .table-description{
+    width: 350px;
+  }
+  
+
+}
+@media(min-width:1500px){
+  .landmark-container{
+    width: 85%;
+  }
+}
+@media(min-width:1920px){
+  .landmark-container{
+    width: 70%;
+  }
 }
 </style>

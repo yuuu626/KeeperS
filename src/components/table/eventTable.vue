@@ -1,13 +1,13 @@
 <template>
     <!-- 活動貼文管理 -->
-    <div class="b-1 w-75 mx-auto" >
+    <div class="b-1 mx-auto event-container" >
     <h2 class="bb-1 bg-accent text-center mx-auto py-1">活動管理</h2>
             <v-data-table-server
                 v-model:items-per-page="tableItemsPerPage"
                 v-model:sort-by="tableSortBy"
                 v-model:page="tablePage"
                 :items="tableItems"
-                :headers="tableHeaders"
+                :headers="$vuetify.display.xs? XstableHeaders:$vuetify.display.sm?SmtableHeaders:$vuetify.display.md?MdtableHeaders : tableHeaders"
                 :loading="tableLoading"
                 :items-length="tableItemsLength"
                 :search="tableSearch"
@@ -15,7 +15,7 @@
                 @update:sort-by="tableLoadItems(false)"
                 @update:page="tableLoadItems(false)"
                 hover
-                class=" mb-15 px-8 rounded-lg"
+                class="mx-auto mb-15 px-2 px-md-8 text-body-1 rounded-sm"
               >
               <!-- 搜尋欄位 -->
               <template #top>
@@ -29,21 +29,27 @@
               </template>
               <template #[`item.image`]="{item }">
                 <router-link :to="'/event/'+ item._id" style="text-decoration: none">
-                  <v-img :src="item.image"  width="140px" max-height="160px"  class="my-5"></v-img>
+                  <v-img :src="item.image" class="table-image my-2"></v-img>
                 </router-link>
               </template>
               <template #[`item.title`]="{ item }">
-                <td style="width: 180px;" class="text-left">{{ item.title }}</td>
+                <td  class="text-center table-title">{{ item.title }}</td>
               </template>
               <template #[`item.address`]="{ item }">
-                <td style="width: 220px;" class="text-left">{{ item.address }}</td>
+                <td class="text-left table-address">{{ item.address }}</td>
               </template>
               <template #[`item.category`]="{ item }">
                 <!-- .join 將陣列轉換為格式化的字串 -->
-                <td style="width:80px;">{{ item.category.join(' , ') }}</td>
+                <td  class="table-category">{{ item.category.join(' , ') }}</td>
+              </template>
+              <template #[`item.date`]="{ item }">
+                <td  class="py-2 table-date">{{ item.date }}</td>
+              </template>
+              <template #[`item.organizer`]="{ item }">
+                <td  class="py-2 table-organizer">{{ item.organizer }}</td>
               </template>
               <template #[`item.description`]="{ item }">
-                <td style="width: 350px;" class="py-2">{{ item.description }}</td>
+                <td  class="py-2 table-description">{{ item.description }}</td>
               </template>
               <template #[`item.action`]="{ item }">
                 <td style="width: 80px;">{{ item.action }}
@@ -57,121 +63,120 @@
             <v-dialog max-width="700" v-model="dialog.open">
                 <v-card>
                         <v-container>
-                            <v-card-title class="font-weight-black text-center text-h4">新增活動</v-card-title>   
+                            <v-card-title class="font-weight-black text-center text-h4">修改活動貼文</v-card-title>   
                             <v-card-text>
-                                <v-form  @submit.prevent="submit" :disabled="isSubmitting">
-                                    <v-row>
-                                        <v-col >
-                                            <!-- plugins > index.js 要先引入套件 -->
-                                            <vue-file-agent
-                                                v-model="fileRecords"
-                                                v-model:raw-model-value="rawFileRecords"
-                                                accept="image/jpeg,image/png"
-                                                deletable
-                                                max-size="1MB"
-                                                help-text="選擇檔案或拖曳到這裡"
-                                                :error-text="{ type: '檔案格式不支援', size: '檔案大小不能超過 1MB' }"
-                                                ref="fileAgent"
-                                                ></vue-file-agent>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <!-- 活動名稱 -->
-                                        <v-col cols="12" md="3" class="my-auto text-center">
-                                        <label class="form-label">活動名稱：</label>
-                                        </v-col>
-                                        <v-col cols="12" md="9">
-                                            <inputText  
-                                            v-model="title.value.value"
-                                            :error-messages="title.errorMessage.value"
-                                            />
-                                        </v-col>
-                                        <!-- 活動地點 -->
-                                        <v-col cols="12" md="3" class="my-auto text-center">
-                                            <label class="form-label">活動地點：</label>
-                                        </v-col>
-                                        <v-col cols="12" md="9">
-                                            <inputText 
-                                            v-model=" address.value.value"
-                                            :error-messages=" address.errorMessage.value"
-                                            ></inputText>
-                                        </v-col>
-                                        <!-- 活動類別 -->
-                                        <v-col cols="12" md="3" class="my-auto text-center">
-                                            <label class="form-label">活動類別：</label>
-                                        </v-col>
-                                        <v-col cols="12" md="3">
-                                            <v-select
-                                                v-model="category.value.value"
-                                                :error-messages="category.errorMessage.value"
-                                                label="選擇" 
-                                                variant="outlined" 
-                                                density="comfortable" 
-                                                dense
-                                                width="140"
-                                                :items="chips"
-                                                hide-details
-                                            ></v-select>
-                                        </v-col>
-                                        <!-- 活動時間 -->
-                                        <v-col cols="3" class="my-auto text-center px-0">
-                                            <label class="form-label">活動時間：</label>
-                                        </v-col>
-                                        <v-col cols="3" >
-                                            <!-- <v-date-input
-                                            v-model="model"
-                                            label="選擇日期"
-                                            max-width="368px"
-                                            variant="outlined"
-                                            density="comfortable"
-                                            hide-details
-                                            ></v-date-input> -->
-                                            <inputText
-                                            v-model="date.value.value"
-                                            :error-messages="date.errorMessage.value"
-                                            />
-                                        </v-col>
-                                        
+                              <v-form  @submit.prevent="submit" :disabled="isSubmitting">
+                <v-row>
+                  <v-col cols="1" ></v-col>
+                  <v-col cols="10" md="12">
+                    <!-- plugins > index.js 要先引入套件 -->
+                    <vue-file-agent
+                      v-model="fileRecords"
+                      v-model:raw-model-value="rawFileRecords"
+                      accept="image/jpeg,image/png"
+                      deletable
+                      max-size="1MB"
+                      help-text="選擇檔案或拖曳到這裡"
+                      :error-text="{ type: '檔案格式不支援', size: '檔案大小不能超過 1MB' }"
+                      ref="fileAgent"
+                      ></vue-file-agent>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <!-- 活動名稱 -->
+                  <v-col cols="4" class="my-auto text-center dialog-col">
+                    <label class="form-label">活動名稱：</label>
+                  </v-col>
+                  <v-col cols="8" >
+                    <inputText  
+                    v-model="title.value.value"
+                    :error-messages="title.errorMessage.value"
+                    :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                    />
+                  </v-col>
+                  <!-- 活動地點 -->
+                  <v-col cols="4"class="my-auto text-center dialog-col">
+                      <label class="form-label">活動地點：</label>
+                  </v-col>
+                  <v-col cols="8">
+                    <inputText 
+                    v-model=" address.value.value"
+                    :error-messages=" address.errorMessage.value"
+                    :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                    ></inputText>
+                  </v-col>
+                  <!-- 活動類別 -->
+                  <v-col cols="4"class="my-auto text-center dialog-col">
+                      <label class="form-label">活動類別：</label>
+                  </v-col>
+                  <v-col cols="8">
+                    <v-select
+                      v-model="category.value.value"
+                      :error-messages="category.errorMessage.value"
+                      label="選擇" 
+                      variant="outlined" 
+                      :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                      dense
+                      :items="chips"
+                      hide-details
+                      multiple
+                      >
+                    </v-select>
+                  </v-col>
+                  <!-- 活動時間 -->
+                  <v-col cols="4" class="my-auto text-center px-0 dialog-col">
+                      <label class="form-label">活動時間：</label>
+                  </v-col>
+                  <v-col cols="8" >
+                    <inputText
+                    v-model="date.value.value"
+                    :error-messages="date.errorMessage.value"
+                    :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                    />
+                  </v-col>
+                  <!-- 主辦單位 -->
+                  <v-col cols="4" class="my-auto text-center dialog-col">
+                    <label class="form-label">主辦單位：</label>
+                  </v-col>
+                  <v-col cols="8">
+                    <inputText
+                    v-model="organizer.value.value"
+                    :error-messages="organizer.errorMessage.value"
+                    :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                    />
+                  </v-col>
 
-                                        <!-- 主辦單位 -->
-                                        <v-col cols="12" md="3" class="my-auto text-center">
-                                            <label class="form-label">主辦單位：</label>
-                                        </v-col>
-                                        <v-col cols="12" md="9">
-                                            <inputText
-                                            v-model="organizer.value.value"
-                                            :error-messages="organizer.errorMessage.value"
-                                            />
-                                        </v-col>
-
-                                        <!-- 活動介紹 -->
-                                        <v-col cols="12" md="3" class="text-center">
-                                        <label class="form-label">活動介紹：</label>
-                                        </v-col>
-                                        <v-col cols="12" md="9">
-                                            <v-textarea
-                                                label="輸入文字"
-                                                variant="outlined" 
-                                                clearable
-                                                hide-details
-                                                v-model="description.value.value"
-                                                :error-messages="description.errorMessage.value"
-                                            ></v-textarea>
-                                        </v-col>
-                                    </v-row>
-                                    <v-card-actions>
-                                <div class="mx-auto">
-                                    <v-btn variant="text"class="rounded-xl b-1" density="comfortable" type="submit" :loading="isSubmitting">送出</v-btn>
-                                    <v-btn
-                                    text="取消"
-                                    variant="text"
-                                    class="rounded-xl b-1"
-                                    density="comfortable"
-                                    @click="closeDialog()"
-                                    ></v-btn>
-                                </div>
-                            </v-card-actions>
-                                </v-form>
+                  <!-- 活動介紹 -->
+                  <v-col cols="4" class="text-center dialog-col mt-3">
+                    <label class="form-label">活動介紹：</label>
+                  </v-col>
+                  <v-col cols="8" >
+                    <v-textarea
+                    auto-grow
+                    label="輸入文字"
+                    variant="outlined" 
+                    clearable
+                    hide-details
+                    v-model="description.value.value"
+                    :error-messages="description.errorMessage.value"
+                    :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                    :rows="$vuetify.display.xs ? '3' : '4'"
+                    ></v-textarea>
+                  </v-col>
+                </v-row>
+                <v-card-actions>
+              <div class="mx-auto mt-3">
+                  <v-btn variant="text"class="rounded-xl b-1 bg-accent" density="comfortable" type="submit" :loading="isSubmitting">送出</v-btn>
+                  <v-btn
+                  text="取消"
+                  variant="text"
+                  class="rounded-xl b-1 bg-info"
+                  density="comfortable"
+                  @click="closeDialog()"
+                  ></v-btn>
+              </div>
+          </v-card-actions>
+              </v-form>
                             </v-card-text>
                         </v-container>
                     </v-card>
@@ -204,15 +209,35 @@ const tableHeaders = [ // 因為欄位是固定的，所以不用ref
 
 // 圖片會直接以文字的方法顯示(直接把image的資料放上來)，因為他會當成是一般的文字，不會顯示圖片
 // 可以在上面 template 上面定義資料的顯示方式
-{ title: '圖片', align: 'center', sortable: false, key: 'image' }, 
+  { title: '圖片', align: 'center', sortable: false, key: 'image' }, 
   { title: '活動名稱', align: 'center', sortable: false, key: 'title' },
   { title: '活動地點', align: 'center', sortable: false, key: 'address' },
   { title: '活動類別', align: 'center', sortable: true, key: 'category' },
   { title: '活動時間', align: 'center', sortable: true, key: 'date' },
-  { title: '主辦單位', align: 'center', sortable: false, key: 'organizer' },
-  { title: '活動介紹', align: 'center', sortable: false, key: 'description' },
   { title: '操作', align: 'center', sortable: false, key: 'action' }
 ]
+
+const XstableHeaders = [ 
+  { title: '活動名稱', align: 'center', sortable: false, key: 'title' },
+  { title: '活動時間', align: 'center', sortable: true, key: 'date' },
+  { title: '操作', align: 'center', sortable: false, key: 'action' }
+]
+const SmtableHeaders = [ 
+  { title: '活動名稱', align: 'center', sortable: false, key: 'title' },
+  { title: '活動類別', align: 'center', sortable: true, key: 'category' },
+  { title: '活動時間', align: 'center', sortable: true, key: 'date' },
+  { title: '操作', align: 'center', sortable: false, key: 'action' }
+]
+
+const MdtableHeaders = [ 
+  { title: '圖片', align: 'center', sortable: false, key: 'image' }, 
+  { title: '活動名稱', align: 'center', sortable: false, key: 'title' },
+  { title: '活動類別', align: 'center', sortable: true, key: 'category' },
+  { title: '活動時間', align: 'center', sortable: true, key: 'date' },
+  { title: '操作', align: 'center', sortable: false, key: 'action' }
+]
+
+
 const tableLoading = ref(true) // 進來頁面時是讀取狀態
 const tableItemsLength = ref(0) // 全部有多少筆資料
 const tableSearch = ref('') // 搜尋的文字
@@ -288,13 +313,11 @@ const schema = yup.object({
     .string()
     .required('活動地點必填'),
   category: yup
-    .string()
+    .array()
     .required('活動分類必填')
     // 自訂驗證規則，檢查分類是否在預定一的 categories 中
     // isCategory 驗證名稱可自定義，第二個是錯誤訊息，第三個是驗證的function
-    .test('isCategory', '商品分類錯誤', value => {
-      return chips.includes(value) // 分類的陣列有沒有包含這個值
-    }),
+    ,
   organizer: yup
     .string()
     .required('主辦單位必填'),
@@ -412,5 +435,64 @@ const deleteItem = async (item) => {
 }
 .bb-1{
   border-bottom: 1px solid #7a7a7a;
+}
+.form-label{
+  font-size: 18px;
+  font-weight: bold;
+}
+.event-container{
+  width: 100%;
+}
+
+.table-title{
+  min-width: 100px;
+  max-width: 120px;
+  font-size: 15px;
+}
+.table-date{
+  min-width: 90px;
+  max-width: 90px;
+  font-size: 15px;
+}
+.table-action{
+  min-width:40px;
+}
+@media(min-width:600px){
+  .form-label{
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .event-container{
+    width: 95%;
+  }
+}
+@media(min-width:960px){
+  .event-container{
+    width: 90%;
+  }
+  .table-image{
+    min-width: 100px;
+    max-width: 120px ;
+    min-height: 115px;
+    max-height: 115px;
+  }
+}
+@media(min-width:1280px){
+  .event-container{
+    width: 87%;
+  }
+  .table-description{
+    white-space: pre-line;
+  }
+}
+@media(min-width:1500px){
+  .event-container{
+    width: 85%;
+  }
+}
+@media(min-width:1920px){
+  .event-container{
+    width: 70%;
+  }
 }
 </style>

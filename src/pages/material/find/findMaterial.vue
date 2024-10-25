@@ -1,137 +1,132 @@
 
 <template>
-        <!-- 物資card -->
-        <v-container class="h-100">
-          <!-- 麵包屑 - 顯示目前頁面位置 -->
-          <v-breadcrumbs :items="items">
-              <template v-slot:divider>
-                <v-icon icon="mdi-chevron-right"></v-icon>
-              </template>
-            </v-breadcrumbs>
-            <!-- 小尺寸新增紐 及 篩選 -->
-            <resourceDialog v-if="mobile" card-title="" type="find" @update="loadMaterials"></resourceDialog>
-            <v-responsive max-width="900" class="mx-auto d-xl-none d-lg-block">
-                    <v-sheet
-                    class="w-100 mx-auto d-inline-block"
-                    >
-                        <v-slide-group
-                            show-arrows
-                            multiple
-                            mobile-breakpoint="xxl"
-                        >
-                        <v-slide-group-item v-slot="{ toggle }">
-                          <v-chip
-                            :style="{
-                              backgroundColor: allSelected ? '#616161' : '#EEEEEE',
-                              color: allSelected ? 'white' : 'black'
-                            }"
-                            class="ma-2"
-                            @click="() => handleAllClick(toggle)"
-                          >
-                            全部
-                          </v-chip>
-                        </v-slide-group-item>
-                            <v-slide-group-item
-                            v-for="category in categories"
-                            :key="category.name"
-                            v-slot="{isSelected, toggle }"
-                            >
-                            <v-chip
-                            :style="{
-                                backgroundColor: allSelected || isSelected? '#616161' : '#EEEEEE',
-                                color: allSelected || isSelected ? 'white' : 'black'
-                            }"
-                            
-                                class="ma-2"
-                                @click="() => handleClick(category, toggle)"
-                            >
-                                {{ category.name }}
-                                
-                            </v-chip>
-                            </v-slide-group-item>
-                        </v-slide-group>
-                    </v-sheet>
-                  </v-responsive>
-            <v-row class="pl-lg-15 h-100">
-              <!-- filteredItems -->
-                <v-col
-                v-for="provide in filteredItems"
-                :key="provide.id"
-                cols="12"
-                md="6">
-                    <v-card variant="flat">
-                        <v-row class="align-content-center h-100 my-4">
-                          <!-- <v-col cols="6"  lg="5" class=" ml-lg-15 ml-5"> -->
-                          <v-col cols="6" sm="7" md="6" class="ml-5 ml-sm-0" >
-                            <router-link :to="'/material/find/'+ provide._id">
-                              <div class="d-flex justify-content-center b-1 item-img">
-                                <v-img :src="provide.image" contain ></v-img>
-                              </div>
-                            </router-link>
-                            </v-col>
-                            <!-- <v-col cols="5" lg="5" class="ml-4"> -->
-                            <v-col cols="5" sm="5" md="5">
-                                <v-card-title class="text-h6  text-md-h6 font-weight-bold ms-md-1">{{ provide.name }}</v-card-title>
-                                <v-card-subtitle style="font-size: 16px;" class="ms-md-1 ">{{ provide.organizer }}</v-card-subtitle>
-                                <v-card-text style="font-size: 15px;" class="ms-md-1 pt-sm-1 pb-sm-2">數量：{{ provide.quantity }}</v-card-text>
-                                <AppButton text="詳細說明" class="bg-third ms-md-4 ms-3 " :to="'/material/find/'+ provide._id"></AppButton>
-                            </v-col>
-                        </v-row>                
-                    </v-card>
-                </v-col>
-                <v-col cols="12">
-                  <v-pagination v-model="page" :length="pages" rounded="circle" @update:model-value="loadMaterials"></v-pagination>
-                </v-col>
-            </v-row>
-        </v-container>
+  <!-- 物資card -->
+  <v-container class="h-100">
+    <!-- 麵包屑 - 顯示目前頁面位置 -->
+    <v-breadcrumbs :items="items">
+      <template v-slot:divider>
+        <v-icon icon="mdi-chevron-right"></v-icon>
+      </template>
+    </v-breadcrumbs>
+      <!-- 小尺寸新增紐 及 篩選 -->
+    <resourceDialog v-if="mobile" type="find" @update="loadMaterials"></resourceDialog>
+    <v-responsive max-width="900" class="mx-auto d-xl-none d-lg-block">
+      <v-sheet
+      class="w-100 mx-auto d-inline-block"
+      >
+        <v-slide-group
+        show-arrows
+        multiple
+        mobile-breakpoint="xxl"
+        >
+        <v-slide-group-item v-slot="{ toggle }">
+          <v-chip
+          :style="{
+            backgroundColor: allSelected ? '#616161' : '#EEEEEE',
+            color: allSelected ? 'white' : 'black'
+          }"
+          class="ma-2"
+          @click="() => handleAllClick(toggle)"
+          >
+            全部
+          </v-chip>
+        </v-slide-group-item>
+          <v-slide-group-item
+          v-for="category in categories"
+          :key="category.name"
+          v-slot="{isSelected, toggle }"
+          >
+            <v-chip
+            :style="{
+            backgroundColor: allSelected || isSelected? '#616161' : '#EEEEEE',
+            color: allSelected || isSelected ? 'white' : 'black'
+            }"
+            class="ma-2"
+            @click="() => handleClick(category, toggle)"
+            >
+            {{ category.name }}
+            </v-chip>
+          </v-slide-group-item>
+        </v-slide-group>
+      </v-sheet>
+    </v-responsive>
+    <v-row class="pl-lg-15 h-100">
+      <!-- filteredItems -->
+      <v-col
+      v-for="provide in filteredItems"
+      :key="provide.id"
+      cols="12"
+      md="6">
+        <v-card variant="flat">
+          <v-row class="align-content-center h-100 my-4">
+            <v-col cols="6" sm="7" md="6" class="ml-5 ml-sm-0" >
+              <router-link :to="'/material/find/'+ provide._id">
+                <div class="d-flex justify-content-center b-1 item-img">
+                  <v-img :src="provide.image" contain ></v-img>
+                </div>
+              </router-link>
+              </v-col>
+              <v-col cols="5" sm="5" md="5">
+                <v-card-title class="text-h6  text-md-h6 font-weight-bold ms-md-1">{{ provide.name }}</v-card-title>
+                <v-card-subtitle style="font-size: 16px;" class="ms-md-1 ">{{ provide.organizer }}</v-card-subtitle>
+                <v-card-text style="font-size: 15px;" class="ms-md-1 pt-sm-1 pb-sm-2">數量：{{ provide.quantity }}</v-card-text>
+                <AppButton text="詳細說明" class="bg-third ms-md-4 ms-3 " :to="'/material/find/'+ provide._id"></AppButton>
+              </v-col>
+          </v-row>                
+        </v-card>
+      </v-col>
+      <v-col cols="12">
+        <v-pagination v-model="page" :length="pages" rounded="circle" @update:model-value="loadMaterials"></v-pagination>
+      </v-col>
+    </v-row>
+  </v-container>
 
 
 
-        <!-- 側邊欄 -->
-        <v-navigation-drawer class="bg-primary b-1 text-center" width="300">
-            <!-- 新增需求對話框 -->
-            <resourceDialog type="find" @update="loadMaterials"></resourceDialog>
-            <!-- 搜尋欄 -->
-            <v-responsive >
-              <v-text-field
-              variant="outlined"
-              label="搜尋"
-              prepend-inner-icon="mdi-magnify"
-              hide-details
-              single-line
-              density="comfortable"
-              clearable
-              width="250" 
-              class="bg-white mx-auto mt-5 my-5"
-              v-model="searchQuery"
-              
-              >
-              </v-text-field>
-            </v-responsive>
-            <v-list-item class="text-h5 font-weight-black text-left ml-2">物資類別</v-list-item>
-            <v-divider thickness="2" length="250" class="mx-auto"></v-divider>
-            <!-- 物資分類 -->
-            <v-container>
-                <v-checkbox
-                    v-model="allSelected"
-                    label="所有物品"
-                    @change="selectAll()"
-                    hide-details
-                    density="comfortable"
-                ></v-checkbox>
+  <!-- 側邊欄 -->
+  <v-navigation-drawer class="bg-primary b-1 text-center" width="300">
+    <!-- 新增需求對話框 -->
+    <resourceDialog type="find" @update="loadMaterials"></resourceDialog>
+    <!-- 搜尋欄 -->
+    <v-responsive >
+      <v-text-field
+      variant="outlined"
+      label="搜尋"
+      prepend-inner-icon="mdi-magnify"
+      hide-details
+      single-line
+      density="comfortable"
+      clearable
+      width="250" 
+      class="bg-white mx-auto mt-5 my-5"
+      v-model="searchQuery"
+      >
+      </v-text-field>
+    </v-responsive>
+    <v-list-item class="text-h5 font-weight-black text-left ml-2">物資類別</v-list-item>
+    <v-divider thickness="2" length="250" class="mx-auto"></v-divider>
+    <!-- 物資分類 -->
+    <v-container>
+      <v-checkbox
+        v-model="allSelected"
+        label="所有物品"
+        @change="selectAll()"
+        hide-details
+        density="comfortable"
+      ></v-checkbox>
 
-                <v-checkbox
-                    v-for="category in categories"
-                    :key="category.name"
-                    v-model="category.selected"
-                    :label="category.name"
-                    @change="filterItems"
-                    hide-details
-                    class="ml-5 "
-                    density="comfortable"
-                ></v-checkbox>
-            </v-container>
-        </v-navigation-drawer>
+      <v-checkbox
+        v-for="category in categories"
+        :key="category.name"
+        v-model="category.selected"
+        :label="category.name"
+        @change="filterItems"
+        hide-details
+        class="ml-5 "
+        density="comfortable"
+      ></v-checkbox>
+    </v-container>
+  </v-navigation-drawer>
         
 
 
@@ -161,7 +156,7 @@ const items=ref([
 {
     title: '首頁',
     disabled: false,
-    href: '/',
+    to: '/',
   },
   {
     title: '我要募資',
@@ -202,7 +197,7 @@ const filterItems = () => {
     filteredItems.value = provides.value.filter(provide => {
       // 物資名字和機構名字是否包含查詢的內容
       return provide.name.toLowerCase().includes(query) ||
-             provide.organizer.toLowerCase().includes(query);
+      provide.organizer.toLowerCase().includes(query);
     });
   } else {
     // 如果「所有物品」未勾選
@@ -252,7 +247,7 @@ onMounted(() => {
 
 const handleClick = (category, toggle) => {
   if (allSelected.value) {
-    // 如果之前是全选状态,现在取消某个类别
+    // 若之前是全選狀態,現在取消某個類別
     allSelected.value = false;
     categories.value.forEach(cat => {
       cat.selected = cat === category;

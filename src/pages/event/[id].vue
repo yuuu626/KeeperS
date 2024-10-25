@@ -104,12 +104,12 @@ const items=ref([
   {
     title: '首頁',
     disabled: false,
-    href: '/',
+    to: '/',
   },
   {
     title: '活動分享',
     disabled: false,
-    href: '../event/findEvent.vue',
+    to: '/event/findEvent',
   },
   {
     title: '物資詳情',

@@ -18,11 +18,12 @@
       <v-dialog max-width="700" v-model="dialog">
         <v-card>
           <v-container class="dialog-container">
-            <v-card-title class="font-weight-black text-center text-h4">新增活動</v-card-title>   
+            <v-card-title class="font-weight-black text-center text-sm-h4 text-h5">新增活動</v-card-title>   
             <v-card-text>
               <v-form  @submit.prevent="submit" :disabled="isSubmitting">
                 <v-row>
-                  <v-col >
+                  <v-col cols="1" ></v-col>
+                  <v-col cols="10" md="12">
                     <!-- plugins > index.js 要先引入套件 -->
                     <vue-file-agent
                       v-model="fileRecords"
@@ -114,11 +115,12 @@
                     v-model="description.value.value"
                     :error-messages="description.errorMessage.value"
                     :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
+                    :rows="$vuetify.display.xs ? '3' : '4'"
                     ></v-textarea>
                   </v-col>
                 </v-row>
                 <v-card-actions>
-              <div class="mx-auto">
+              <div class="mx-auto mt-3">
                   <v-btn variant="text"class="rounded-xl b-1 bg-accent" density="comfortable" type="submit" :loading="isSubmitting">送出</v-btn>
                   <v-btn
                   text="取消"
@@ -195,7 +197,7 @@
       <v-row class="my-3 d-flex " >
         <v-col cols="12" sm="6" md="4" lg="3" v-for="event in filteredEvents" :key="event._id" class="mx-0">
           <router-link :to="'/event/'+ event._id" style="text-decoration: none">
-            <v-card  variant="flat" color="third" class="b-1 card-size">
+            <v-card  variant="flat" color="third" class="b-1 card-size" elevation="5">
                 <v-card-item class="p-5 text-left">
                     <div  class="d-flex justify-content-center b-1 mt-2 mb-2 bg-white img-container">
                         <v-img :src="event.image" contain></v-img>
@@ -243,7 +245,7 @@ const items=ref([
 {
     title: '首頁',
     disabled: false,
-    href: '/',
+    to: '/',
   },
   {
     title: '活動分享',
@@ -300,11 +302,7 @@ const closeDialog = () => {
   fileAgent.value.deleteFileRecord() 
 }
 
-watch(() => {
-  if(!dialog){
-  resetForm()
-}
-});
+
 const schema = yup.object({
   title: yup
     .string()
@@ -480,7 +478,7 @@ loadEvents();
 <style scoped>
 
 .b-1{
-  border: 1px solid #7a7a7a;
+  border: 1px solid #b3b3b3;
 }
 #create{
   position: fixed;
@@ -513,6 +511,20 @@ loadEvents();
 .dialog-col{
   padding: 0;
 }
+
+.v-overlay__content{
+    background-color: #fff;
+}
+
+::v-deep .v-input__prepend{
+    margin-right: 5px;
+}
+
+::v-deep .v-field__input{
+    padding: 12px 10px 12px 10px;
+    /* width: 120px; */
+}
+
 @media (min-width: 600px) {
   .v-row{
     padding: 0px 8% 0px 8%;
@@ -564,17 +576,6 @@ loadEvents();
   }
 }
 
-.v-overlay__content{
-    background-color: #fff;
-}
 
-::v-deep .v-input__prepend{
-    margin-right: 5px;
-}
-
-::v-deep .v-field__input{
-    padding: 12px 10px 12px 10px;
-    /* width: 120px; */
-}
 
 </style>

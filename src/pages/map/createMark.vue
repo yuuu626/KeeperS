@@ -543,7 +543,7 @@ const items=ref([
 {
     title: '首頁',
     disabled: false,
-    href: '/',
+    to: '/',
   },
   {
     title: '新增資源',

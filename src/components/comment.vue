@@ -123,7 +123,6 @@ const { api, apiAuth } = useApi()
 const createSnackbar = useSnackbar()
 const route = useRoute()
 
-
 const schema = yup.object({
   comment: yup
     .string()
@@ -160,16 +159,15 @@ onMounted(() => {
   loadComments()
 })
 
-
 const comment = useField('comment')
 const submit = handleSubmit(async (values) => {
   try {
     const data = {
+        // content:comment.value.value 
         content:values.comment,
         materialId: route.params.id
     }
     
-    console.log(data)
     await apiAuth.post('comment/', data) 
     createSnackbar({
       text: '新增成功' ,

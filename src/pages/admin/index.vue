@@ -173,7 +173,7 @@ import { useSnackbar } from 'vuetify-use-dialog'
 const createSnackbar = useSnackbar()
 const drawer = ref(false)
 
-
+console.log(user)
 definePage({
   meta: {
     title: 'KeeperS | 管理者'
